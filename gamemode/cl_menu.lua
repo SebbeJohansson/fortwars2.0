@@ -40,7 +40,8 @@ local dollas = "You can also receive $20, 000 FW Cash for each $1 USD you donate
 
 function PANEL:Init()
   self:SetSize(900, 500)
-  self.tabNames = {"Help", "Classes", "Upgrades", "Donations", "Options"}
+  // Disabled donations tab until we know what to do with it.
+  self.tabNames = {"Help", "Classes", "Upgrades"/*, "Donations"*/, "Options"}
   self.selectedClass = 1
   self.selectedSkill = 1
   --Hold all the items in a 1D table and loop to set visibility to false/true...
@@ -689,7 +690,7 @@ end
   propModel:SetCamPos(Vector(0, 250, 60))
   
   --DONATIONS TAB
-  local donPanel = vgui.Create("DPanel", self)
+  /*local donPanel = vgui.Create("DPanel", self)
   donPanel.tab = 4
   donPanel:StretchToParent(20, 125, 20, 20)
   donPanel.Paint = function()
@@ -720,14 +721,14 @@ end
     end
     local usd = util.WordWrap(dollas, "Default", donPanel:GetWide()-100)
     draw.DrawText(usd, "Default", xOff, 230, Color(255, 255, 255, 255), 0)
-    draw.SimpleText("Join our Discord at https://discord.gg/ERa48zV for more info on donations.", "Default", donPanel:GetWide()*0.5+2, donPanel:GetTall()-22, Color(0, 0, 0, 255), 1, 1)
+    draw.SimpleText("Join our Discord at https://discord.gg/3uBD8k2 for more info on donations.", "Default", donPanel:GetWide()*0.5+2, donPanel:GetTall()-22, Color(0, 0, 0, 255), 1, 1)
   end
 
-  table.insert(self.dispItems, donPanel)
+  table.insert(self.dispItems, donPanel)*/
 
   
   local optPanel = vgui.Create("DPanel", self)
-  optPanel.tab = 5
+  optPanel.tab = 4//5
   optPanel:StretchToParent(20, 125, 20, 20)
   optPanel.Paint = function()
   local col = team.GetColor(Me:Team())
@@ -971,9 +972,7 @@ function PANEL:RefreshTabs()
 end
 
 function PANEL:Paint()
-  --RememberCursorPosition()
   gui.EnableScreenClicker(true) -- make sure cursor stays visible
-  --RestoreCursorPosition()
   surface.SetTexture(surface.GetTextureID("darkland/f1bg_temp"))
   local col = team.GetColor(Me:Team())
   surface.SetDrawColor(math.Clamp(90+col.r, 0, 255), math.Clamp(90+col.g, 0, 255), math.Clamp(90+col.b, 0, 255), 255)
@@ -995,4 +994,3 @@ function CreateMenu()
 end
 hook.Add("FullyLoaded", "CreateMenu", CreateMenu)
 concommand.Add("fw_help", CreateMenu)
-local hi = "wat"

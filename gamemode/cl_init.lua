@@ -502,7 +502,7 @@ function PANEL:Paint()
 	--health bar
 	local healthSkill = myupgrades[2] or 0
 	draw.RoundedBox(6, 75, 188, math.Clamp(11+Me:Health()/(Classes[class].HEALTH + (healthSkill * 10))*215, 11, 226), 12, Color(170, 0, 0, 240))
-	draw.SimpleTextOutlined("Health: "..Me:Health(), "Default", 87, 193, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
+	draw.SimpleTextOutlined("Health: "..math.abs(Me:Health()), "Default", 87, 193, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
 	
 	--energy bar
 	draw.RoundedBox(6, 74, 232, 11+Me:GetNWInt('energy')/(100+(myupgrades[3]*5))*215, 12, Color(0, 0, 170, 240))

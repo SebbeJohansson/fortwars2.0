@@ -384,6 +384,19 @@ function assignPlayerTeam(ply)
     end
     table.sort(t, function(a, b) return team.NumPlayers(a) < team.NumPlayers(b) end)
     ply:UnSpectate()
+    
+    
+    if table.Count( t ) == 0 then
+        print("No teams. Something has happened. Reloading post entiies")
+        GAMEMODE:InitPostEntity()
+        for i, v in pairs(TeamInfo) do 
+            if v.Present then 
+                table.insert(t, i) 
+            end 
+        end
+        table.sort(t, function(a, b) return team.NumPlayers(a) < team.NumPlayers(b) end)
+    end
+    
     ply:SetTeam(t[1])
     local c = team.GetColor(t[1])
     ply:SetColor(Color(c.r, c.g, c.b, c.a))
@@ -399,7 +412,7 @@ end
 
 function GM:PlayerInitialSpawn(ply)
 
-	ply:ChatPrint("Welcome to FortWars 13!")
+    SendChatText( ply, Color( 255, 255, 255 ), "Welcome to FortWars 13!" )
 
 	-- So our donators feel special :)
 	
@@ -551,7 +564,14 @@ function GM:PlayerSelectSpawn( pl )
     return pl.SpawnPoint 
   end
 	local tbl = TeamInfo[pl:Team()]
+    
 	if !tbl then return nil end --They have not loaded, spawn them in noclip underground
+    
+    if !tbl.Spawns || table.Count( tbl.Spawns ) == 0 then
+        GAMEMODE:InitPostEntity()
+        tbl = TeamInfo[pl:Team()]
+    end
+    
 	local v = tbl.Spawns[math.random(#tbl.Spawns)]
 	if (v) then return v end
 	return tbl.Spawns[1]
@@ -1287,19 +1307,23 @@ function CreateBall()
 		ent = ents.Create("prop_physics")
 		ent:SetModel("models/Roller.mdl")
 		ent:SetName("ball")
+        
 		for _, t in pairs(ents.FindByClass("balldrop")) do	
 			ent:SetPos(t:GetPos())
 		end
-		ent:Spawn()
+		
+        ent:Spawn()
 		ent:GetPhysicsObject():EnableMotion(true)
 		ent:GetPhysicsObject():Wake()
 		ent:Activate()
-		local rp = RecipientFilter()
+		
+        local rp = RecipientFilter()
 		rp:AddAllPlayers()
 		net.Start("ballentid")
 		net.WriteInt(ent:EntIndex(), 32)
 		net.Send(rp)
-		elseif DM_MODE == false then
-		ent:Remove()
+		
+    elseif DM_MODE == false then
+        //ent:Remove()
 	end
 end

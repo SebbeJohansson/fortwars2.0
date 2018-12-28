@@ -333,7 +333,6 @@ draw.SimpleText("FortWars 13", "ClassName", 136, 20, Color(255, 255, 255, 255), 
 	
 	
 draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's timer runs out", "Default", 350), "Default", 136, 35, Color(255, 255, 255, 255), 1, 1)
-
 	for i, v in pairs(TeamInfo) do
 	
 		if v.Present then

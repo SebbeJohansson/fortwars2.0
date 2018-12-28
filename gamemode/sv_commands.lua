@@ -56,24 +56,26 @@ function admincommand(ply,command,args)
 		end
 	elseif tonumber(args[1]) == 3 then
 		if !ply:IsAdmin() and !ply:IsSuperAdmin() then return end
-		StartBuild()
-		TeamInfo[1].HoldTime = DEFAULT_BALL_TIME
-		TeamInfo[2].HoldTime = DEFAULT_BALL_TIME
-		TeamInfo[3].HoldTime = DEFAULT_BALL_TIME
-		TeamInfo[4].HoldTime = DEFAULT_BALL_TIME
-		for e=1,4 do
-			team.SetScore(e,0)
-		end
-			if ent:GetName("prop") then
-			ent:Remove()
-			end
+        
+		for k,v in pairs(TeamInfo) do
+            TeamInfo[k].HoldTime = DEFAULT_BALL_TIME
+            team.SetScore(k,0)
+        end
+        
+        props = ents.FindByClass("prop")
+        for k,v in pairs(props) do
+            v:Remove()
+        end
+        
+        StartBuild()
+        
 		for i,v in pairs(player.GetAll()) do
 			SendChatText( v, Color( 255, 255, 255 ), ply:Name().." has restarted the game")
 		end
 		FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> restarted the game")
 	elseif tonumber(args[1]) == 4 then
 		if !ply:IsUserGroup("moderator") and !ply:IsAdmin() and !ply:IsSuperAdmin() then return end
-		if ent:GetName("ball") then
+		if DM_MODE && ent:GetName("ball") then
 			ent:Remove()
 			timer.Simple(0.1, function() 
 			CreateBall()

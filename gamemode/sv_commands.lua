@@ -465,6 +465,11 @@ ChatCommands = {
 	m = "modchat",
 }
 
+AdminChatCommands = {
+--chat command	--concommand
+	//a = "adminchat",
+}
+
 function AddChatCommand(chatCmd, consoleCmd)
 	if not ChatCommands then return; end
 	ChatCommands[chatCmd] = consoleCmd
@@ -503,10 +508,11 @@ hook.Add("PlayerSay", "ChatCommands", function(ply, text, public)
 			end
 			if (cmdArgs) then					
 				ply:ConCommand(ChatCommands[command]..cmdArgs)
-			return ""
+                return ""
 			end
 			
 		elseif AdminChatCommands[command] then
+            if !ply:IsAdmin() then ply:SendLua([[notification.AddLegacy("Invalid authority to use this command.", NOTIFY_ERROR, 4) surface.PlaySound("buttons/button10.wav") Msg("Invalid authority to use this command.\n")]]) end
 			local cmdArgs = ""
 
 			for k, v in pairs(args) do
@@ -523,7 +529,7 @@ hook.Add("PlayerSay", "ChatCommands", function(ply, text, public)
 			end
 			if (cmdArgs) then					
 				ply:ConCommand(AdminChatCommands[command]..cmdArgs)
-			return ""
+                return ""
 			end
 			
 		else

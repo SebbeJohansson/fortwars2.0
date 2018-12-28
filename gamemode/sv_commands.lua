@@ -37,22 +37,22 @@ function admincommand(ply,command,args)
 		if DM_MODE == false then
 			StartDM()
 			for i,v in pairs(player.GetAll()) do
-				v:ChatPrint(ply:Name().." has forced fight mode!")
+				SendChatText( v, Color( 255, 255, 255 ), ply:Name().." has forced fight mode!")
 			end
 			FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> forced fight mode")
 		else
-			ply:ChatPrint("Deathmatch is already on!")
+			SendChatText( ply, Color( 255, 255, 255 ), "Deathmatch is already on!")
 		end
 	elseif tonumber(args[1]) == 2 then
 		if !ply:IsAdmin() and !ply:IsSuperAdmin() then return end
 		if DM_MODE == true then
 			StartBuild()
 			for i,v in pairs(player.GetAll()) do
-				v:ChatPrint(ply:Name().." has forced build mode!")
+				SendChatText( v, Color( 255, 255, 255 ), ply:Name().." has forced build mode!")
 			end
 			FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> forced build mode")
 		else
-			ply:ChatPrint("Build mode is already on!")
+			SendChatText( ply, Color( 255, 255, 255 ), "Build mode is already on!")
 		end
 	elseif tonumber(args[1]) == 3 then
 		if !ply:IsAdmin() and !ply:IsSuperAdmin() then return end
@@ -68,7 +68,7 @@ function admincommand(ply,command,args)
 			ent:Remove()
 			end
 		for i,v in pairs(player.GetAll()) do
-			v:ChatPrint(ply:Name().." has restarted the game")
+			SendChatText( v, Color( 255, 255, 255 ), ply:Name().." has restarted the game")
 		end
 		FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> restarted the game")
 	elseif tonumber(args[1]) == 4 then
@@ -81,7 +81,7 @@ function admincommand(ply,command,args)
 		end
 			
 		for i,v in pairs(player.GetAll()) do
-			v:ChatPrint(ply:Name().." has respawned the ball!")
+			SendChatText( v, Color( 255, 255, 255 ), ply:Name().." has respawned the ball!")
 		end
 		FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> respawned the ball")
 	end
@@ -189,8 +189,8 @@ concommand.Add( "setmoney", function(ply, cmd, args)
 		SendChatText( ply, Color( 255, 0, 0 ), "Usage: /setmoney <name/userid> <amount>" )
 		return
 	end
-	ply:ChatPrint("You have set the money of "..name:Name().." to $"..amount.."!")
-	name:ChatPrint(ply:Name().." has set the money of you to $" .. amount)
+	SendChatText( ply, Color( 255, 255, 255 ), "You have set the money of "..name:Name().." to $"..amount.."!")
+	SendChatText( name, Color( 255, 255, 255 ), ply:Name().." has set the money of you to $" .. amount)
 	name:SetMoney(amount)
 	
 	FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> set the money of "..name:Name().." "..name:SteamID().." to $"..amount)
@@ -207,8 +207,8 @@ concommand.Add( "addmoney", function(ply, cmd, args)
 		SendChatText( ply, Color( 255, 0, 0 ), "Usage: /addmoney <name/userid> <amount>" )
 		return
 	end
-	ply:ChatPrint("You have added $"..amount.." to ".. name:Name())
-	name:ChatPrint(ply:Name().." has added $" .. amount.." to your account")
+	SendChatText( ply, Color( 255, 255, 255 ), "You have added $"..amount.." to ".. name:Name())
+	SendChatText( name, Color( 255, 255, 255 ), ply:Name().." has added $" .. amount.." to your account")
 	name:AddMoney(amount)
 	FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> added $"..amount.." to "..name:Name().." "..name:SteamID())
 	
@@ -225,8 +225,8 @@ concommand.Add( "takemoney", function(ply, cmd, args)
 		SendChatText( ply, Color( 255, 0, 0 ), "Usage: /takemoney <name/userid> <amount>" )
 		return
 	end
-	ply:ChatPrint("You took $"..amount.." from ".. name:Name())
-	name:ChatPrint(ply:Name().." took $" .. amount.." from you")
+	SendChatText( ply, Color( 255, 255, 255 ), "You took $"..amount.." from ".. name:Name())
+	SendChatText( name, Color( 255, 255, 255 ), ply:Name().." took $" .. amount.." from you")
 	name:TakeMoney(amount)
 	FWLOG("[FWADMIN] - " ..ply:Nick().."<"..ply:SteamID().. "> took $"..amount.." from "..name:Name().." "..name:SteamID())
 	
@@ -240,7 +240,7 @@ concommand.Add( "setmember", function(ply, cmd, args)
 	local member = tonumber(args[2])
 	
 	if !name or !member then
-		ply:ChatPrint("Usage: /setmember <name/userid> <member level>")
+		SendChatText( ply, Color( 255, 255, 255 ), "Usage: /setmember <name/userid> <member level>")
 		return
 	end
 	
@@ -251,10 +251,10 @@ end)
 concommand.Add( "playerstats", function(ply, cmd, args)
 	local name = findplayer(args[1])
 	if !name then
-		ply:ChatPrint("Usage: /stats <name/userid>")
+		SendChatText( ply, Color( 255, 255, 255 ), "Usage: /stats <name/userid>")
 		return
 	end
-	ply:ChatPrint("["..name:Nick().."] Kills: " .. name.stats[1] .. " Assists: " .. name.stats[2] .. " Balltime: " .. name.stats[3] .. " seconds Money: $" .. name.cash .. " Wins: " .. name.stats[4] .. " Losses: " .. name.stats[5] .. "Play time: " .. name.stats[6])
+	SendChatText( ply, Color( 255, 255, 255 ), "["..name:Nick().."] Kills: " .. name.stats[1] .. " Assists: " .. name.stats[2] .. " Balltime: " .. name.stats[3] .. " seconds Money: $" .. name.cash .. " Wins: " .. name.stats[4] .. " Losses: " .. name.stats[5] .. "Play time: " .. name.stats[6])
 end)
 
 concommand.Add( "givemoney", function(ply, cmd, args)
@@ -262,22 +262,22 @@ concommand.Add( "givemoney", function(ply, cmd, args)
 	local amount = tonumber(args[2])
 	
 	if !name or !amount then
-		ply:ChatPrint("Usage: /givemoney <name> <amount>")
+		SendChatText( ply, Color( 255, 255, 255 ), "Usage: /givemoney <name> <amount>")
 		return
 	end
 	
 	if ply != name then 
 		if ply.cash >= amount then
-			ply:ChatPrint("You have given "..name:Name().." $"..amount.."!")
-			name:ChatPrint(ply:Name().." has given you ".."$"..amount.."!")
+			SendChatText( ply, Color( 255, 255, 255 ), "You have given "..name:Name().." $"..amount.."!")
+			SendChatText( name, Color( 255, 255, 255 ), ply:Name().." has given you ".."$"..amount.."!")
 			ply:TakeMoney(amount)
 			name:AddMoney(amount)
 			FWLOG("[FW] - " ..ply:Nick().."<"..ply:SteamID().. "> gave "..name:Name().." "..name:SteamID().." $"..amount)
 		else
-			ply:ChatPrint("You do not have that much money to give")
+			SendChatText( ply, Color( 255, 255, 255 ), "You do not have that much money to give")
 		end
 	else
-		ply:ChatPrint("You cannot give money to yourself!")
+		SendChatText( ply, Color( 255, 255, 255 ), "You cannot give money to yourself!")
 	end
 end)
 
@@ -288,7 +288,7 @@ concommand.Add( "setclass", function(ply, cmd, args)
 	local name = findplayer(args[1])
 	local class = tonumber(args[2])
 	if !name or !class then
-		ply:ChatPrint("Usage: /setclass <name> <classid>")
+		SendChatText( ply, Color( 255, 255, 255 ), "Usage: /setclass <name> <classid>")
 		return
 	end
 	name:Kill()
@@ -316,7 +316,7 @@ concommand.Add( "voteskip", function(ply, cmd, args)
 	if voteSkipping then return end
 
 	if VoteSkippers[ply:SteamID()] then 
-		ply:ChatPrint("You have already voteskipped this round!") 
+		SendChatText( ply, Color( 255, 255, 255 ), "You have already voteskipped this round!") 
 		return 
 	end
 	VoteSkippers[ply:SteamID()] = true
@@ -342,7 +342,7 @@ concommand.Add( "voteskip", function(ply, cmd, args)
 	end
 	
 	for i,v in pairs(player.GetAll()) do 
-		v:ChatPrint("There are now "..VoteSkips.." voteskips. ("..needed.." needed)") 
+		SendChatText( v, Color( 255, 255, 255 ), "There are now "..VoteSkips.." voteskips. ("..needed.." needed)") 
 	end
 end)
 
@@ -420,7 +420,7 @@ function chooseTeam(ply, cmd, args)
    // hook.Call("PlayerJoinedTeam", GAMEMODE, ply)
   else
 	ply:SetNWBool("onteam", false)
-    ply:ChatPrint("This team is currently full")
+    SendChatText( ply, Color( 255, 255, 255 ), "This team is currently full")
   end
 end
 concommand.Add("chooseteam", chooseTeam)

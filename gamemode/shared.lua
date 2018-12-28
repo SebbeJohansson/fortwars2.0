@@ -1,5 +1,5 @@
-GM.Name     = "FortWars 13"
-GM.Author   = "g33k / Darkspider"
+GM.Name     = "FortWars 2.0"
+GM.Author   = "Red - Continuation from the work of g33k & Darkspider"
 GM.Email    = ""
 GM.Website  = "" 
 

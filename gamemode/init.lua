@@ -148,12 +148,16 @@ function meta:TakeDmg(amt,atk,inf)
 end
 
 function SendChatText( player, color, text )
-	net.Start( "chatprint" )
-		net.WriteInt( color.r, 10 )
-		net.WriteInt( color.g, 10 )
-		net.WriteInt( color.b, 10 )
-		net.WriteString( text )
-	net.Send( player )
+    if KokoAdmin then
+        KokoAdmin.ColorfulChatprint(player, {color, text})
+    else
+        net.Start( "chatprint" )
+            net.WriteInt( color.r, 10 )
+            net.WriteInt( color.g, 10 )
+            net.WriteInt( color.b, 10 )
+            net.WriteString( text )
+        net.Send( player )
+    end
 end
 
 function SetColor( ply, color )
@@ -370,27 +374,27 @@ function GM:AdjustMouseSensitivity()
 end
 
 function assignPlayerTeam(ply)
-  if !IsValid(ply) or ply:Team() == (1 or 2 or 3 or 4) then return end -- he picked a team already
-  
-  local t = {}
-  for i, v in pairs(TeamInfo) do 
-    if v.Present then 
-      table.insert(t, i) 
-    end 
-  end
-  table.sort(t, function(a, b) return team.NumPlayers(a) < team.NumPlayers(b) end)
-  ply:UnSpectate()
-  ply:SetTeam(t[1])
-  local c = team.GetColor(t[1])
-  ply:SetColor(Color(c.r, c.g, c.b, c.a))
-  SetColor( ply, c )
-  players[ply:SteamID()] = t[1]
-  --ply:Kill()
-  
-  ply:Spawn()
-  ply:SetDeaths(0)
-  
-  hook.Call("PlayerJoinedTeam", GAMEMODE, ply)
+    if !IsValid(ply) or ply:Team() == (1 or 2 or 3 or 4) then return end -- he picked a team already
+
+    local t = {}
+    for i, v in pairs(TeamInfo) do 
+        if v.Present then 
+            table.insert(t, i) 
+        end 
+    end
+    table.sort(t, function(a, b) return team.NumPlayers(a) < team.NumPlayers(b) end)
+    ply:UnSpectate()
+    ply:SetTeam(t[1])
+    local c = team.GetColor(t[1])
+    ply:SetColor(Color(c.r, c.g, c.b, c.a))
+    SetColor( ply, c )
+    players[ply:SteamID()] = t[1]
+    --ply:Kill()
+
+    ply:Spawn()
+    ply:SetDeaths(0)
+
+    hook.Call("PlayerJoinedTeam", GAMEMODE, ply)
 end
 
 function GM:PlayerInitialSpawn(ply)

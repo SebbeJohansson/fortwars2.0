@@ -44,6 +44,8 @@ function PANEL:Paint()
   
   if self.Player:Team() == TEAM_CONNECTING then
     color = Color( 200, 120, 50, 255 )
+  elseif self.Player:Team() == TEAM_SPECTATOR then
+    color = Color( 165, 165, 165, 255 )
   end
   
   if self.Open or self.Size ~= self.TargetSize then

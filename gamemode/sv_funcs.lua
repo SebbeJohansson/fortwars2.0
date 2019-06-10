@@ -127,6 +127,87 @@ function meta:SaveAccount()
 	file.Write("fortwars/"..truncatedid..".txt", json)
 end
 
+function meta:NewSaveAccount()
+    local steamid = DB.Escape(self:SteamID())
+    local name = DB.Escape(self.name)
+    local cash = self.cash
+    local memberlevel = self.memberlevel
+    
+    print("Saved "..steamid)
+    
+    DB.Query({sql = string.format([[
+        INSERT INTO players
+                    (steamid, name, cash, memberlevel)
+        VALUES      ("%s", "%s", %i, %i)
+        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i
+    ]], steamid, name, cash, memberlevel, name, cash, memberlevel)})
+    
+    local speed_limit               = self.upgrades[1]
+    local health_limit              = self.upgrades[2]
+    local energy_limit              = self.upgrades[3]
+    local energy_regen              = self.upgrades[4]
+    local fall_damage_resistance    = self.upgrades[5]
+    
+    DB.Query({sql = string.format([[
+        INSERT INTO upgrades
+                    (steamid, speed_limit, health_limit, energy_limit, energy_regen, fall_damage_resistance)
+        VALUES      ("%s", %i, %i, %i, %i, %i)
+        ON DUPLICATE KEY UPDATE speed_limit = %i, health_limit = %i, energy_limit = %i, energy_regen = %i, fall_damage_resistance = %i
+    ]], steamid, speed_limit, health_limit, energy_limit, energy_regen, fall_damage_resistance, speed_limit, health_limit, energy_limit, energy_regen, fall_damage_resistance)})
+    
+end
+
+function meta:NewLoadAccount()
+    print("[Forwars MSG] Loading account: "..self:Name().."["..self:SteamID().."]...")
+    local steamid = DB.Escape(self:SteamID())
+    self.DbData['data_loaded'] = false
+    
+    DB.Query({sql = "SELECT * FROM players WHERE steamid = '"..steamid.."'", callback = function(mData)
+        for k,v in pairs(mData[1]) do
+            self.DbData[k] = v
+        end
+        DB.Query({sql = "SELECT * FROM upgrades WHERE steamid = '"..steamid.."'", callback = function(mData)
+            
+            local upgrades = {mData[1]['speed_limit'], mData[1]['health_limit'], mData[1]['energy_limit'], mData[1]['energy_regen'], mData[1]['fall_damage_resistance']}
+            self.DbData['upgrades'] = upgrades
+            self.DbData['data_loaded'] = true
+            print("All player data is loaded. Let player spawn.")
+            print(self.DbData['cash'])
+            
+            /*net.Start("sendinfo")
+                net.WriteInt(self.DbData['cash'], 32)
+            net.Send(self)*/
+            
+            net.Start("sendinfo")
+                net.WriteString(self.name)
+                net.WriteInt(self.DbData['cash'], 32)
+                net.WriteTable(self.classes)
+                net.WriteTable(self.specials)
+                net.WriteTable(self.DbData['upgrades'])
+                net.WriteTable(self.props)
+                net.WriteTable(self.stats)
+                net.WriteInt(self.DbData['memberlevel'], 32)
+            net.Send(self)
+            
+            /*umsg.Start("SetCanJoinTeam", self)
+                umsg.Bool(true)
+            umsg.End()*/
+        end})
+    end})
+    
+    //PrintTable(self.DbData)
+    
+    
+    /*net.Start( "SyncPlayer" )
+        net.WriteTable( self.DbData )
+    net.Send(self)*/
+    
+end
+
+function meta:SpawnPlayer()
+        
+end
+
 
 function EnergyRegen(ply)
 	ply:SetNWInt('energy', ply:GetNWInt('energy') + tonumber(Skills[4].LEVEL[ply.upgrades[4]]))

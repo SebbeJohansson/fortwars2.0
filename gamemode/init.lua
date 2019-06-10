@@ -464,9 +464,9 @@ function GM:PlayerInitialSpawn(ply)
 		end
 	umsg.End()
 
-----------------------
---Team picking shit
-----------------------
+    ----------------------
+    --Team picking shit
+    ----------------------
 
   local canJoinTeam = true
   local canJoin = true

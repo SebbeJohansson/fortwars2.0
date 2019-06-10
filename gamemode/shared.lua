@@ -48,6 +48,9 @@ VOTE_WARNING = 10
 EVEN_TEAMS = true --if true, teams must still be even to change teams.
 ROUNDOVER = false
 
+--      Development shit      --
+PRINT_QUERIES_IN_CONSOLE = true
+
 ----------------------------------------------------------------------
 --DO NOT EDIT BELOW THIS, UNLESS YOU KNOW WHAT YOU ARE DOING
 ----------------------------------------------------------------------

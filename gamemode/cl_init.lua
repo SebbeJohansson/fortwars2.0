@@ -37,6 +37,7 @@ net.Receive("sendinfo", function(len)
 	myprops = actualprops
 	mystats = actualstats
 	memberlevel = actualmember
+    playerloaded = 1
 end)
 
 net.Receive("updatecash", function(len)
@@ -94,6 +95,7 @@ myspecials = myspecials or {0, }
 myupgrades = myupgrades or {0, 0, 0, 0, }
 myprops = myprops or {}
 memberlevel = memberlevel or 1
+playerloaded = 0
 
 net.Receive("leaderboards", function(len, pl)
 
@@ -482,30 +484,32 @@ end
 
 local PANEL = {}
 function PANEL:Paint()
-	local Me = LocalPlayer()
-	--HUD Texture
-	if !IsValid(Me) then return end
-	surface.SetTexture(surface.GetTextureID("darkland/fortwars/hud3"))
-	surface.SetDrawColor(255, 255, 255, 255)
-	surface.DrawTexturedRect(0, 0, self:GetWide(), self:GetTall())
-	
-	--Status Information
-	local c = team.GetColor(Me:Team())
-	local txt = "Regular"
-	if memberlevel == 3 then txt = "Platinum" elseif memberlevel == 2 then txt = "Premium" end
-	draw.RoundedBox(8, 13, 148, 264, 14, Color(c.r, c.g, c.b, 220))
-	local status = "Class: "..Classes[class].NAME.."  |  "..""..txt.."  |  "..ToMoney( cash )
-	draw.SimpleTextOutlined(status, "Default", 18, 153, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255)) 
-	
-	
-	--health bar
-	local healthSkill = myupgrades[2] or 0
-	draw.RoundedBox(6, 75, 188, math.Clamp(11+Me:Health()/(Classes[class].HEALTH + (healthSkill * 10))*215, 11, 226), 12, Color(170, 0, 0, 240))
-	draw.SimpleTextOutlined("Health: "..math.abs(Me:Health()), "Default", 87, 193, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
-	
-	--energy bar
-	draw.RoundedBox(6, 74, 232, 11+Me:GetNWInt('energy')/(100+(myupgrades[3]*5))*215, 12, Color(0, 0, 170, 240))
-	draw.SimpleTextOutlined("Energy: "..math.Round(Me:GetNWInt('energy')), "Default", 87, 237, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255)) 
+    if playerloaded == 1 then
+        local Me = LocalPlayer()
+        --HUD Texture
+        if !IsValid(Me) then return end
+        surface.SetTexture(surface.GetTextureID("darkland/fortwars/hud3"))
+        surface.SetDrawColor(255, 255, 255, 255)
+        surface.DrawTexturedRect(0, 0, self:GetWide(), self:GetTall())
+        
+        --Status Information
+        local c = team.GetColor(Me:Team())
+        local txt = "Regular"
+        if memberlevel == 3 then txt = "Platinum" elseif memberlevel == 2 then txt = "Premium" end
+        draw.RoundedBox(8, 13, 148, 264, 14, Color(c.r, c.g, c.b, 220))
+        local status = "Class: "..Classes[class].NAME.."  |  "..""..txt.."  |  "..ToMoney( cash )
+        draw.SimpleTextOutlined(status, "Default", 18, 153, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255)) 
+        
+        
+        --health bar
+        local healthSkill = myupgrades[2] or 0
+        draw.RoundedBox(6, 75, 188, math.Clamp(11+Me:Health()/(Classes[class].HEALTH + (healthSkill * 10))*215, 11, 226), 12, Color(170, 0, 0, 240))
+        draw.SimpleTextOutlined("Health: "..math.abs(Me:Health()), "Default", 87, 193, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
+        
+        --energy bar
+        draw.RoundedBox(6, 74, 232, 11+Me:GetNWInt('energy')/(100+(myupgrades[3]*5))*215, 12, Color(0, 0, 170, 240))
+        draw.SimpleTextOutlined("Energy: "..math.Round(Me:GetNWInt('energy')), "Default", 87, 237, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
+    end
 end
 
 vgui.Register("Status", PANEL, "DPanel")

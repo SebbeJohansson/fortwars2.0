@@ -17,50 +17,45 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
     local steamid = DB.Escape(ply:SteamID())
     local PlayerFound = false
     
+    print("[Forwars MSG] Loading account: "..ply:Name().."["..ply:SteamID().."]...")
     DB.Query({sql = "SELECT * FROM players WHERE steamid = '"..steamid.."'", callback = 
         function(mData)
             if #mData != 0 then
                 PlayerFound = true
                 for k,v in pairs(mData[1]) do
                     ply.DbData[k] = v
+                    
                 end
             end
             ply.ProfileLoadStatus = ply.ProfileLoadStatus + 1
-        end
-    })
     
     
-    DB.Query({sql = "SELECT * FROM upgrades WHERE steamid = '"..steamid.."'", callback = 
-        function(mData)
-            if #mData != 0 then
-                local upgrades = {mData[1]['speed_limit'], mData[1]['health_limit'], mData[1]['energy_limit'], mData[1]['energy_regen'], mData[1]['fall_damage_resistance']}
-                ply.DbData['upgrades'] = upgrades
-            end
-            ply.ProfileLoadStatus = ply.ProfileLoadStatus + 1
+            DB.Query({sql = "SELECT * FROM upgrades WHERE steamid = '"..steamid.."'", callback = 
+                function(mData)
+                    if #mData != 0 then
+                        local upgrades = {mData[1]['speed_limit'], mData[1]['health_limit'], mData[1]['energy_limit'], mData[1]['energy_regen'], mData[1]['fall_damage_resistance']}
+                        ply.DbData['upgrades'] = upgrades
+                    end
+                    ply.ProfileLoadStatus = ply.ProfileLoadStatus + 1
+                    
+                    
+                end
+            })
         end
     })
     
     timer.Create(ply:SteamID().."_WaitProfile",1,60,function()
-		if ply and ply:IsValid() then
-			if ply.ProfileLoadStatus == 2 then
+		
+        if ply and ply:IsValid() then
+            if ply.ProfileLoadStatus == 2 then
                 // Compltely loaded
-                print("Completely loaded player")
+                print("Completely loaded player.")
                 
-				timer.Destroy(ply:SteamID().."_WaitProfile")
-				ply.ProfileLoadStatus = nil
+                timer.Destroy(ply:SteamID().."_WaitProfile")
+                ply.ProfileLoadStatus = nil
                 
-                if !table.Empty(ply.DbData) && PlayerFound then
+                if !table.IsEmpty(ply.DbData) && PlayerFound then
                     print("Player was loaded")
-                
-                    local fileread = file.Read("fortwars/"..truncatedid..".txt")
-                    local tbl = util.JSONToTable(fileread)
-                    
-                    if table.Count(ply.DbData) < table.Count(DEFAULT_STATS) then
-                        table.insert( ply.DbData, 0 )
-                    end
-                    if table.Count(ply.DbData) < table.Count(DEFAULT_UPGRADES) then
-                        table.insert( ply.DbData, 0 )
-                    end
                     
                     ply.name = ply.DbData.name or ""
                     ply.cash = ply.DbData.cash or 0
@@ -82,22 +77,22 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
                         net.WriteInt(ply.memberlevel, 32)
                     net.Send(ply)
                     
-                    //ply:ChatPrint( "Your FortWars account has been loaded!" )
+                    ply.SpawnPlayer()
+                    
+                    ply:ChatPrint( "Your FortWars account has been loaded!" )
                     
                 else
                     print("No player was found")
                     
                     --Create a new account upon joining if one does not exist
-                    local tbl = {}
-                    
-                    tbl.name = ply:Name()
-                    tbl.cash = 12000
-                    tbl.classes = {1, }
-                    tbl.specials = {0, }
-                    tbl.upgrades = DEFAULT_UPGRADES
-                    tbl.props = DEFAULT_PROPS
-                    tbl.stats = DEFAULT_STATS
-                    tbl.memberlevel = 1
+                    ply.name = ply:Name()
+                    ply.cash = 12000
+                    ply.classes = {1, }
+                    ply.specials = {0, }
+                    ply.upgrades = DEFAULT_UPGRADES
+                    ply.props = DEFAULT_PROPS
+                    ply.stats = DEFAULT_STATS
+                    ply.memberlevel = 1
                     
                     net.Start("sendinfo")
                         net.WriteString(ply.name)
@@ -110,44 +105,47 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
                         net.WriteInt(ply.memberlevel, 32)
                     net.Send(ply)
                     
-                    ply.SaveAccount()
+                    ply.SpawnPlayer()
                     
                     ply:ChatPrint( "A FortWars account has been created for you!" )
-                    
                 end
-			end
-		end
+            end
+        end
 	end)
 end)
 
 if ( !timer.Exists("accountsaveinterval") ) then
 	timer.Create("accountsaveinterval", 1, 0, function() 
+        print("Saving all players.")
 		for k, v in pairs (player.GetAll()) do
-			v:NewSaveAccount()
+            if v.ProfileLoadStatus == nil then
+                v:SaveAccount()
+            end
 		end
+        print("Saved all players.")
 	end)
 end
-/*
+
 hook.Add("PlayerDisconnected", "DisconnectSaveAccount", function(ply)
 	ply:SaveAccount()
-end)*/
+end)
 
 require("tmysql4")
 
 DB = {}
 DB.MySql = {}
 DB.Connected = false
-DB.Host = "192.223.31.138"
-DB.Database = "fortwars"
+DB.Host = "hostaddress"
+DB.Database = "databasename"
 DB.Port = 3306
 DB.Username = "admin"
-DB.Password = ""
+DB.Password = "password"
 
 function DB.Setup()
 	print("[MySQL Msg] Checking / Creating Tables")
     print(DB.Connected)
 
-	/*DB.Query({sql = [[CREATE TABLE IF NOT EXISTS players
+	DB.Query({sql = [[CREATE TABLE IF NOT EXISTS players
 		(
 			steamid VARCHAR(20),
 			name VARCHAR(20),
@@ -167,7 +165,7 @@ function DB.Setup()
             fall_damage_resistance INT,
 			Primary key (steamid)
 		)
-	]]})*/
+	]]})
 end
 
 function DB.Reset()

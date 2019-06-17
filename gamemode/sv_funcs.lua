@@ -132,13 +132,15 @@ function meta:SaveAccount()
     local name = DB.Escape(self.name)
     local cash = self.cash
     local memberlevel = self.memberlevel
+    local classes = util.TableToJSON(self.classes)
+    local stats = util.TableToJSON(self.stats)
     
     DB.Query({sql = string.format([[
         INSERT INTO players
-                    (steamid, name, cash, memberlevel)
-        VALUES      ("%s", "%s", %i, %i)
-        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i
-    ]], steamid, name, cash, memberlevel, name, cash, memberlevel)})
+                    (steamid, name, cash, memberlevel, classes, stats, specials)
+        VALUES      ("%s", "%s", %i, %i, "%s", "%s", "%s")
+        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i, classes = "%s", stats = "%s", specials = "%s"
+    ]], steamid, name, cash, memberlevel, classes, stats, specials, name, cash, memberlevel, classes, stats, specials)})
     
     local speed_limit               = self.upgrades[1]
     local health_limit              = self.upgrades[2]

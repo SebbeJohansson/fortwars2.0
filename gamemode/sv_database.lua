@@ -59,11 +59,11 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
                     
                     ply.name = ply.DbData.name or ""
                     ply.cash = ply.DbData.cash or 0
-                    ply.classes = ply.DbData.classes or {1, }
-                    ply.specials = ply.DbData.specials or {1, }
+                    ply.classes = util.JSONToTable(ply.DbData.classes) or {1, }
+                    ply.specials = util.JSONToTable(ply.DbData.specials) or {1, }
                     ply.upgrades = ply.DbData.upgrades or DEFAULT_UPGRADES
                     ply.props = ply.DbData.props or DEFAULT_PROPS
-                    ply.stats = ply.DbData.stats or DEFAULT_STATS
+                    ply.stats = util.JSONToTable(ply.DbData.stats) or DEFAULT_STATS
                     ply.memberlevel = ply.DbData.memberlevel or 1
                     
                     net.Start("sendinfo")
@@ -105,6 +105,7 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
                         net.WriteInt(ply.memberlevel, 32)
                     net.Send(ply)
                     
+                    
                     ply.SpawnPlayer()
                     
                     ply:ChatPrint( "A FortWars account has been created for you!" )
@@ -116,13 +117,13 @@ end)
 
 if ( !timer.Exists("accountsaveinterval") ) then
 	timer.Create("accountsaveinterval", 1, 0, function() 
-        print("Saving all players.")
+        //print("Saving all players.")
 		for k, v in pairs (player.GetAll()) do
             if v.ProfileLoadStatus == nil then
                 v:SaveAccount()
             end
 		end
-        print("Saved all players.")
+        //print("Saved all players.")
 	end)
 end
 
@@ -143,7 +144,6 @@ DB.Password = "password"
 
 function DB.Setup()
 	print("[MySQL Msg] Checking / Creating Tables")
-    print(DB.Connected)
 
 	DB.Query({sql = [[CREATE TABLE IF NOT EXISTS players
 		(
@@ -151,6 +151,7 @@ function DB.Setup()
 			name VARCHAR(20),
 			cash INT,
 			memberlevel INT,
+            classes VARCHAR(256),
 			Primary key (steamid)
 		)
 	]]})

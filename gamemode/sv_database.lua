@@ -1,5 +1,5 @@
-DEFAULT_STATS = {0, 0, 0, 0, 0, 0, 0,}
-DEFAULT_UPGRADES = {0, 0, 0, 0, 0,}
+DEFAULT_STATS = {kills = 0, assists = 0, balltime = 0, wins = 0, losses = 0, playtime = 0}
+DEFAULT_UPGRADES = {speed_limit = 0, health_limit = 0, energy_limit = 0, energy_regen = 0, fall_damage_resistance = 0}
 DEFAULT_PROPS = {}
 
 /*---------------------------------------------------------
@@ -33,12 +33,28 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
             DB.Query({sql = "SELECT * FROM upgrades WHERE steamid = '"..steamid.."'", callback = 
                 function(mData)
                     if #mData != 0 then
-                        local upgrades = {mData[1]['speed_limit'], mData[1]['health_limit'], mData[1]['energy_limit'], mData[1]['energy_regen'], mData[1]['fall_damage_resistance']}
-                        ply.DbData['upgrades'] = upgrades
+                        ply.DbData['upgrades'] = {}
+                        for k,v in pairs(mData[1]) do
+                            if k != "steamid" then
+                                ply.DbData['upgrades'][k] = v
+                            end
+                        end
                     end
                     ply.ProfileLoadStatus = ply.ProfileLoadStatus + 1
                     
-                    
+                    DB.Query({sql = "SELECT * FROM player_stats WHERE steamid = '"..steamid.."'", callback = 
+                        function(mData)
+                            if #mData != 0 then
+                                ply.DbData['stats'] = {}
+                                for k,v in pairs(mData[1]) do
+                                    if k != "steamid" then
+                                        ply.DbData['stats'][k] = v
+                                    end
+                                end
+                            end
+                            ply.ProfileLoadStatus = ply.ProfileLoadStatus + 1
+                        end
+                    })
                 end
             })
         end
@@ -47,7 +63,7 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
     timer.Create(ply:SteamID().."_WaitProfile",1,60,function()
 		
         if ply and ply:IsValid() then
-            if ply.ProfileLoadStatus == 2 then
+            if ply.ProfileLoadStatus == 3 then
                 // Compltely loaded
                 print("Completely loaded player.")
                 
@@ -63,7 +79,7 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
                     ply.specials = util.JSONToTable(ply.DbData.specials) or {1, }
                     ply.upgrades = ply.DbData.upgrades or DEFAULT_UPGRADES
                     ply.props = ply.DbData.props or DEFAULT_PROPS
-                    ply.stats = util.JSONToTable(ply.DbData.stats) or DEFAULT_STATS
+                    ply.stats = ply.DbData.stats or DEFAULT_STATS
                     ply.memberlevel = ply.DbData.memberlevel or 1
                     
                     net.Start("sendinfo")
@@ -152,6 +168,8 @@ function DB.Setup()
 			cash INT,
 			memberlevel INT,
             classes VARCHAR(256),
+            stats VARCHAR(256),
+            specials VARCHAR(256),
 			Primary key (steamid)
 		)
 	]]})
@@ -217,6 +235,53 @@ function DB.Query(query)
         DB.MySql:Query(query.sql, callBack, 1)
     end
 end
+
+// data needs to be associative table.
+function DB.InsertUpdateOnDupe(tblName, key, data)
+
+    local query = "INSERT INTO "..tblName
+    
+    local columns = ""
+    local values = ""
+    local ondupe = ""
+
+    
+    for k,v in pairs(key) do
+        columns = columns..k
+        if isstring(v) then
+            v = "'"..v.."'"
+        end
+        values = values..v
+
+
+        if next(key,k) != nil or table.Count(key) == 1 then
+            -- do something in last cycle
+            columns = columns..", "
+            values = values..", "
+        end
+    end
+
+    for k,v in pairs(data) do
+        columns = columns..k
+        if isstring(v) then
+            v = "'"..v.."'"
+        end
+        values = values..v
+        
+        ondupe = ondupe..""..k.." = "..v
+
+        if next(data,k) != nil then
+            -- do something in last cycle
+            columns = columns..", "
+            values = values..", "
+            ondupe = ondupe..", "
+        end
+    end
+    query = query.." ("..columns..") VALUES ("..values..") ON DUPLICATE KEY UPDATE "..ondupe
+    DB.Query({sql = query})
+end
+
+
 DB.Connect()
 hook.Add( "OnReloaded" , "OnReloadedHook" , function()
     DB.Disconnect()

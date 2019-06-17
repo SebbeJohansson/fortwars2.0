@@ -256,7 +256,7 @@ concommand.Add( "playerstats", function(ply, cmd, args)
 		SendChatText( ply, Color( 255, 255, 255 ), "Usage: /stats <name/userid>")
 		return
 	end
-	SendChatText( ply, Color( 255, 255, 255 ), "["..name:Nick().."] Kills: " .. name.stats[1] .. " Assists: " .. name.stats[2] .. " Balltime: " .. name.stats[3] .. " seconds Money: $" .. name.cash .. " Wins: " .. name.stats[4] .. " Losses: " .. name.stats[5] .. "Play time: " .. name.stats[6])
+	SendChatText( ply, Color( 255, 255, 255 ), "["..name:Nick().."] Kills: " .. name.stats[1] .. " Assists: " .. name.stats[2] .. " Balltime: " .. name.stats[3] .. " seconds Money: $" .. name.cash .. " Wins: " .. name.stats[4] .. " Losses: " .. name.stats[5] .. "Play time: " .. name.stats["playtime"])
 end)
 
 concommand.Add( "givemoney", function(ply, cmd, args)

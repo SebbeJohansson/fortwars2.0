@@ -105,29 +105,6 @@ function meta:Gib( norm )
 end
 
 function meta:SaveAccount()
-	local truncatedid = string.gsub(self:SteamID(), ":", "_")
-	local tbl = {}
-	local classes = {}
-	local specials = {}
-	local upgrades = {}
-	local props = {}
-	local stats = {}
-	local memberlevel = {}
-	
-	tbl.name = self.name
-	tbl.cash = self.cash
-	tbl.classes = self.classes
-	tbl.specials = self.specials
-	tbl.upgrades = self.upgrades
-	tbl.props = self.props
-	tbl.stats = self.stats
-	tbl.memberlevel = self.memberlevel
-	
-	/*local json = util.TableToJSON(tbl)
-	file.Write("fortwars/"..truncatedid..".txt", json)*/
-end
-
-function meta:SaveAccount()
     local steamid = DB.Escape(self:SteamID())
     local name = DB.Escape(self.name)
     local cash = self.cash
@@ -137,23 +114,13 @@ function meta:SaveAccount()
     
     DB.Query({sql = string.format([[
         INSERT INTO players
-                    (steamid, name, cash, memberlevel, classes, stats, specials)
-        VALUES      ("%s", "%s", %i, %i, "%s", "%s", "%s")
-        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i, classes = "%s", stats = "%s", specials = "%s"
-    ]], steamid, name, cash, memberlevel, classes, stats, specials, name, cash, memberlevel, classes, stats, specials)})
+                    (steamid, name, cash, memberlevel, classes, specials)
+        VALUES      ("%s", "%s", %i, %i, "%s", "%s")
+        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i, classes = "%s", specials = "%s"
+    ]], steamid, name, cash, memberlevel, classes, specials, name, cash, memberlevel, classes, specials)})
     
-    local speed_limit               = self.upgrades[1]
-    local health_limit              = self.upgrades[2]
-    local energy_limit              = self.upgrades[3]
-    local energy_regen              = self.upgrades[4]
-    local fall_damage_resistance    = self.upgrades[5]
-    
-    DB.Query({sql = string.format([[
-        INSERT INTO upgrades
-                    (steamid, speed_limit, health_limit, energy_limit, energy_regen, fall_damage_resistance)
-        VALUES      ("%s", %i, %i, %i, %i, %i)
-        ON DUPLICATE KEY UPDATE speed_limit = %i, health_limit = %i, energy_limit = %i, energy_regen = %i, fall_damage_resistance = %i
-    ]], steamid, speed_limit, health_limit, energy_limit, energy_regen, fall_damage_resistance, speed_limit, health_limit, energy_limit, energy_regen, fall_damage_resistance)})
+    DB.InsertUpdateOnDupe("upgrades", {steamid = steamid}, self.upgrades)    
+    DB.InsertUpdateOnDupe("player_stats", {steamid = steamid}, self.stats)
     
 end
 
@@ -163,23 +130,23 @@ end
 
 
 function EnergyRegen(ply)
-	ply:SetNWInt('energy', ply:GetNWInt('energy') + tonumber(Skills[4].LEVEL[ply.upgrades[4]]))
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', ply:GetNWInt('energy') + tonumber(Skills["energy_regen"].LEVEL[ply.upgrades["energy_regen"]]))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 function EnergyFreeze(ply)
 	ply:SetNWInt('energy', ply:GetNWInt('energy'))
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 function EnergyDrainPred(ply)
 	ply:SetNWInt('energy', ply:GetNWInt('energy') - (PRED_DRAIN_RATE/10) )
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 function EnergyDrainRaid(ply)
 	ply:SetNWInt('energy', ply:GetNWInt('energy') - 2.5 )
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 timer.Create("energyTimer",0.1,0,function()
@@ -203,7 +170,7 @@ end)
 timer.Create("timeplayed",1,0,function()
 	for i,v in pairs(player.GetAll()) do
         if v.ProfileLoadStatus == nil then
-            v.stats[6] = v.stats[6] + 1
+            v.stats["playtime"] = v.stats["playtime"] + 1
         end
 	end
 end)

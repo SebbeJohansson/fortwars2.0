@@ -127,7 +127,7 @@ net.Receive("leaderboards", function(len, pl)
 
 	timer.Simple(1, function()
 		for k, v in pairs (accounts) do
-			local playtime = accounts[k].stats[6]
+			local playtime = accounts[k].stats["playtime"]
 			if !playtime then playtime = 0 else playtime = math.Round(playtime/3600) end
 		
 			hispanel:AddLine(accounts[k].name or "Unknown", accounts[k][1], accounts[k].cash, accounts[k].stats[1] or 0, accounts[k].stats[2] or 0, accounts[k].stats[3] or 0, accounts[k].stats[4] or 0, accounts[k].stats[5] or 0, playtime	)
@@ -502,12 +502,12 @@ function PANEL:Paint()
         
         
         --health bar
-        local healthSkill = myupgrades[2] or 0
+        local healthSkill = myupgrades["health_limit"] or 0
         draw.RoundedBox(6, 75, 188, math.Clamp(11+Me:Health()/(Classes[class].HEALTH + (healthSkill * 10))*215, 11, 226), 12, Color(170, 0, 0, 240))
         draw.SimpleTextOutlined("Health: "..math.abs(Me:Health()), "Default", 87, 193, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
         
         --energy bar
-        draw.RoundedBox(6, 74, 232, 11+Me:GetNWInt('energy')/(100+(myupgrades[3]*5))*215, 12, Color(0, 0, 170, 240))
+        draw.RoundedBox(6, 74, 232, 11+Me:GetNWInt('energy')/(100+(myupgrades["energy_limit"]*5))*215, 12, Color(0, 0, 170, 240))
         draw.SimpleTextOutlined("Energy: "..math.Round(Me:GetNWInt('energy')), "Default", 87, 237, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
     end
 end

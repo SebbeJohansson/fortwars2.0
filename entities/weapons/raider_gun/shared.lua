@@ -75,9 +75,9 @@ function SWEP:Think()
 	end
 	
 	if self.Owner:GetNWBool( "raidrunning" ) == true then
-		self.Owner:SetWalkSpeed((oldspeed + Skills[1].LEVEL[self.Owner.upgrades[1]]) * 3)
+		self.Owner:SetWalkSpeed((oldspeed + Skills["speed_limit"].LEVEL[self.Owner.upgrades["speed_limit"]]) * 3)
 	else
-		self.Owner:SetWalkSpeed( oldspeed + Skills[1].LEVEL[ self.Owner.upgrades[1] ])
+		self.Owner:SetWalkSpeed( oldspeed + Skills["speed_limit"].LEVEL[ self.Owner.upgrades["speed_limit"] ])
 	end
 		end
 	end
@@ -92,7 +92,7 @@ function SWEP:Holster(wep)
 	
 	if self.Owner:GetNWBool( "raidrunning" ) == true then
 		self.Owner:SetNWBool( "raidrunning", false )
-		self.Owner:SetWalkSpeed( oldspeed + Skills[1].LEVEL[ self.Owner.upgrades[1] ])
+		self.Owner:SetWalkSpeed( oldspeed + Skills["speed_limit"].LEVEL[ self.Owner.upgrades["speed_limit"] ])
 		self.Weapon:SetNextSecondaryFire(CurTime() + 5)
 	end
 	

@@ -457,7 +457,7 @@ function InitialSpawnPlayer(ply)
     ply:SetNWInt("myballtime", ply.stats[3])
     ply:SetNWInt("mywins", ply.stats[4])
     ply:SetNWInt("mylosses", ply.stats[5])
-    ply:SetNWInt("mytime", math.Round(ply.stats[6] / 3600))
+    ply:SetNWInt("mytime", math.Round(ply.stats["playtime"] / 3600))
     ply:SetNWInt("mystatus", ply.memberlevel)
 
     for k, v in pairs(TeamInfo) do
@@ -562,11 +562,11 @@ function SpawnPlayer(ply)
     local oldhp = Classes[index].HEALTH
     local oldspeed = Classes[index].SPEED
 
-    ply:SetWalkSpeed(oldspeed + Skills[1].LEVEL[ply.upgrades[1]])
+    ply:SetWalkSpeed(oldspeed + Skills["speed_limit"].LEVEL[ply.upgrades["speed_limit"]])
     ply:SetRunSpeed(ply:GetWalkSpeed())
-    ply:SetHealth(oldhp + Skills[2].LEVEL[ply.upgrades[2]])
-    ply:SetMaxHealth(oldhp + Skills[2].LEVEL[ply.upgrades[2]])
-    ply:SetNWInt('energy', 100 + Skills[3].LEVEL[ply.upgrades[3]])
+    ply:SetHealth(oldhp + Skills["health_limit"].LEVEL[ply.upgrades["health_limit"]])
+    ply:SetMaxHealth(oldhp + Skills["health_limit"].LEVEL[ply.upgrades["health_limit"]])
+    ply:SetNWInt('energy', 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]])
     ply:SetModel(Classes[index].MODEL)
     ply:SetJumpPower(Classes[index].JUMPOWER)
 
@@ -1180,7 +1180,7 @@ end
 
 function GM:GetFallDamage(ply, speed)
     speed = speed - 580
-    if tonumber(ply:GetPData("Class")) != 3 then return speed * (1 / Skills[5].LEVEL[ply.upgrades[5]]) end
+    if tonumber(ply:GetPData("Class")) != 3 then return speed * (1 / Skills[5].LEVEL[ply.upgrades["fall_damage_resistance"]]) end
 end
 
 function GM:EntityTakeDamage(ply, dmginfo)

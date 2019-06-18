@@ -562,7 +562,7 @@ function PANEL:Init()
     skillList:SetSpacing(2)
     skillList:SetWide(250)
     skillList:EnableVerticalScrollbar()
-    PrintTable(Skills)
+    
     for i, v in pairs(Skills) do
       local p = vgui.Create("Panel")
       p.OnCursorEntered = function() p.Hovered = true end

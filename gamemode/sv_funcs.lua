@@ -110,7 +110,7 @@ function meta:SaveAccount()
     local cash = self.cash
     local memberlevel = self.memberlevel
     local classes = util.TableToJSON(self.classes)
-    local stats = util.TableToJSON(self.stats)
+    local specials = util.TableToJSON(self.specials)
     
     DB.Query({sql = string.format([[
         INSERT INTO players

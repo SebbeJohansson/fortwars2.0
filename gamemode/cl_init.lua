@@ -100,8 +100,9 @@ playerloaded = 0
 net.Receive("leaderboards", function(len, pl)
 
 	local accounts = net.ReadTable()
-	PrintTable(accounts)
-	
+    PrintTable(accounts)
+	Msg(table.Count(accounts))
+    
 	local wid, hei = 1100, 600
 	local frame = vgui.Create("DFrame")
 	
@@ -127,10 +128,10 @@ net.Receive("leaderboards", function(len, pl)
 
 	timer.Simple(1, function()
 		for k, v in pairs (accounts) do
-			local playtime = accounts[k].stats["playtime"]
+			local playtime = v.playtime
 			if !playtime then playtime = 0 else playtime = math.Round(playtime/3600) end
 		
-			hispanel:AddLine(accounts[k].name or "Unknown", accounts[k][1], accounts[k].cash, accounts[k].stats[1] or 0, accounts[k].stats[2] or 0, accounts[k].stats[3] or 0, accounts[k].stats[4] or 0, accounts[k].stats[5] or 0, playtime	)
+			hispanel:AddLine(v.name or "Unknown", k, v.cash, v.kills or 0, v.assists or 0, v.balltime or 0, v.wins or 0, v.losses or 0, playtime)
 		end
 	end)
 	

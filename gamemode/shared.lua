@@ -302,7 +302,7 @@ EndGameStats[5] = {
 		return t[1][1],t[1][2]
 	end
 }
-EndGamestats["playtime"] = {
+EndGameStats[6] = {
 	Text = function(pl,data) return pl:Name().." is a bit shy, with only  "..data.." kills" end,
 	Grabber = function(pl)
 		local t = {}

@@ -433,16 +433,10 @@ concommand.Add("fw_leaderboards", function( ply, cmd, args )
 
 	local tbl = {}
 	
-	for k, v in pairs (file.Find("fortwars/*.txt", "DATA")) do
-		table.insert(tbl, util.JSONToTable(file.Read("fortwars/"..v)))
-		
-		local id = string.gsub( v, "_", ":" )
-		local id = string.gsub( id, ".txt", "" )
-		local id = string.gsub( id, "STEAM:", "STEAM_" )
-		
-		table.insert(tbl[k], id)
+	for k, v in pairs (Leaderboard.Players) do
+		tbl = table.ForceInsert(tbl, v)
 	end
-	
+    
 	net.Start("leaderboards")
 	net.WriteTable(tbl)
 	net.Send(ply)

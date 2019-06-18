@@ -147,6 +147,33 @@ hook.Add("PlayerDisconnected", "DisconnectSaveAccount", function(ply)
 	ply:SaveAccount()
 end)
 
+Leaderboard = {}
+Leaderboard.Players = {}
+
+if ( !timer.Exists("loadloaderboardplayers") ) then
+	timer.Create("loadloaderboardplayers", 120, 0, function() 
+        local mPlayers = {}
+        DB.Select("players", "*", {callback = 
+            function(mData)
+                for k,v in pairs(mData) do
+                    local ply = {steamid = v.steamid, name = v.name, cash = v.cash}
+                    mPlayers[v.steamid] = ply
+                end
+                DB.Select("player_stats", "*", {callback = 
+                    function(mData)
+                        for k,v in pairs(mData) do
+                            local ply = {kills = v.kills, assists = v.assists, balltime = v.balltime, wins = v.wins, losses = v.losses, playtime = v.playtime}
+                            mPlayers[v.steamid] = table.Merge(mPlayers[v.steamid], ply)
+                        end
+                        Leaderboard.Players = mPlayers
+                    end
+                })
+                
+            end}
+        )
+	end)
+end
+
 require("tmysql4")
 
 DB = {}
@@ -255,7 +282,7 @@ function DB.InsertUpdateOnDupe(tblName, key, data)
 
 
         if next(key,k) != nil or table.Count(key) == 1 then
-            -- do something in last cycle
+            -- do something when not last cycle or only one value in table
             columns = columns..", "
             values = values..", "
         end
@@ -271,7 +298,7 @@ function DB.InsertUpdateOnDupe(tblName, key, data)
         ondupe = ondupe..""..k.." = "..v
 
         if next(data,k) != nil then
-            -- do something in last cycle
+            -- do something when not last cycle
             columns = columns..", "
             values = values..", "
             ondupe = ondupe..", "
@@ -279,6 +306,29 @@ function DB.InsertUpdateOnDupe(tblName, key, data)
     end
     query = query.." ("..columns..") VALUES ("..values..") ON DUPLICATE KEY UPDATE "..ondupe
     DB.Query({sql = query})
+end
+
+function DB.Select(tblName, columns, callback)
+    
+    local query = "SELECT "
+    
+    columns = columns or "*"
+    
+    if type(columns) == "table" then
+        for k,v in pairs(data) do
+            columns = columns..v
+
+            if next(data,k) != nil then
+                -- do something when not last cycle
+                columns = columns..", "
+            end
+        end
+    end
+    
+    query = query..columns.." FROM "..tblName
+    
+    DB.Query({sql = query, callback = callback.callback})
+    
 end
 
 

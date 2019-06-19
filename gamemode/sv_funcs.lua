@@ -26,7 +26,7 @@ function meta:AddMoney(i)
 	net.Start("updatecash")
 		net.WriteInt(self.cash, 32)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:TakeMoney(i)
@@ -34,7 +34,7 @@ function meta:TakeMoney(i)
 	net.Start("updatecash")
 		net.WriteInt(self.cash, 32)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:SetMoney(i)
@@ -42,7 +42,7 @@ function meta:SetMoney(i)
 	net.Start("updatecash")
 		net.WriteInt(self.cash, 32)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:AddClass(i)
@@ -50,7 +50,7 @@ function meta:AddClass(i)
 	net.Start("updateclasses")
 		net.WriteTable(self.classes)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:AddSpecial(i)
@@ -58,7 +58,7 @@ function meta:AddSpecial(i)
 	net.Start("updatespecials")
 		net.WriteTable(self.specials)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:HasSpecial(i)
@@ -70,7 +70,7 @@ function meta:LevelUp(i)
 	net.Start("updatelevels")
 		net.WriteTable(self.upgrades)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:AddProp(i)
@@ -78,7 +78,7 @@ function meta:AddProp(i)
 	net.Start("updateprops")
 		net.WriteTable(self.props)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:SetDonor(i)
@@ -86,7 +86,7 @@ function meta:SetDonor(i)
 	net.Start("updatedonor")
 		net.WriteInt(self.memberlevel, 32)
 	net.Send(self)
-	self:SaveAccount()
+	//self:SaveAccount()
 end
 
 function meta:IsPremium()
@@ -105,67 +105,73 @@ function meta:Gib( norm )
 end
 
 function meta:SaveAccount()
-	local truncatedid = string.gsub(self:SteamID(), ":", "_")
-	local tbl = {}
-	local classes = {}
-	local specials = {}
-	local upgrades = {}
-	local props = {}
-	local stats = {}
-	local memberlevel = {}
-	
-	tbl.name = self.name
-	tbl.cash = self.cash
-	tbl.classes = self.classes
-	tbl.specials = self.specials
-	tbl.upgrades = self.upgrades
-	tbl.props = self.props
-	tbl.stats = self.stats
-	tbl.memberlevel = self.memberlevel
-	
-	local json = util.TableToJSON(tbl)
-	file.Write("fortwars/"..truncatedid..".txt", json)
+    local steamid = DB.Escape(self:SteamID())
+    local name = DB.Escape(self.name)
+    local cash = self.cash
+    local memberlevel = self.memberlevel
+    local classes = util.TableToJSON(self.classes)
+    local specials = util.TableToJSON(self.specials)
+    local props = util.TableToJSON(self.props)
+    
+    DB.Query({sql = string.format([[
+        INSERT INTO players
+                    (steamid, name, cash, memberlevel, classes, specials, props)
+        VALUES      ("%s", "%s", %i, %i, "%s", "%s", "%s")
+        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i, classes = "%s", specials = "%s", props = "%s"
+    ]], steamid, name, cash, memberlevel, classes, specials, props, name, cash, memberlevel, classes, specials, props)})
+    
+    DB.InsertUpdateOnDupe("upgrades", {steamid = steamid}, self.upgrades)
+    DB.InsertUpdateOnDupe("player_stats", {steamid = steamid}, self.stats)
+    
+end
+
+function meta:SpawnPlayer()
+    print("LETS SPAWN THE PLAAAAYYYYEEERRR")
 end
 
 
 function EnergyRegen(ply)
-	ply:SetNWInt('energy', ply:GetNWInt('energy') + tonumber(Skills[4].LEVEL[ply.upgrades[4]]))
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', ply:GetNWInt('energy') + tonumber(Skills["energy_regen"].LEVEL[ply.upgrades["energy_regen"]]))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 function EnergyFreeze(ply)
 	ply:SetNWInt('energy', ply:GetNWInt('energy'))
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 function EnergyDrainPred(ply)
 	ply:SetNWInt('energy', ply:GetNWInt('energy') - (PRED_DRAIN_RATE/10) )
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 function EnergyDrainRaid(ply)
 	ply:SetNWInt('energy', ply:GetNWInt('energy') - 2.5 )
-	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills[3].LEVEL[ply.upgrades[3]] )))
+	ply:SetNWInt('energy', (math.Clamp( ply:GetNWInt('energy'), 0, 100 + Skills["energy_limit"].LEVEL[ply.upgrades["energy_limit"]] )))
 end
 
 timer.Create("energyTimer",0.1,0,function()
 
 	for i,v in pairs(player.GetAll()) do
 
-		if v:GetNWBool( "cloaked" ) == false and v:GetNWBool( "raidrunning" ) == false and tonumber(v:GetPData("Class")) != 2 then
-			EnergyRegen(v)
-		elseif v:GetNWBool( "cloaked" ) == true then
-			EnergyDrainPred(v)
-		elseif v:GetNWBool( "raidrunning" ) == true then
-			EnergyDrainRaid(v)
-		elseif tonumber(v:GetPData("Class")) == 2 then
-			EnergyFreeze(v)
-		else return end
+        if v.ProfileLoadStatus == nil then
+            if v:GetNWBool( "cloaked" ) == false and v:GetNWBool( "raidrunning" ) == false and tonumber(v:GetPData("Class")) != 2 then
+                EnergyRegen(v)
+            elseif v:GetNWBool( "cloaked" ) == true then
+                EnergyDrainPred(v)
+            elseif v:GetNWBool( "raidrunning" ) == true then
+                EnergyDrainRaid(v)
+            elseif tonumber(v:GetPData("Class")) == 2 then
+                EnergyFreeze(v)
+            else return end
+        end
 	end
 end)
 
 timer.Create("timeplayed",1,0,function()
 	for i,v in pairs(player.GetAll()) do
-		v.stats[6] = v.stats[6] + 1
+        if v.ProfileLoadStatus == nil then
+            v.stats["playtime"] = v.stats["playtime"] + 1
+        end
 	end
 end)

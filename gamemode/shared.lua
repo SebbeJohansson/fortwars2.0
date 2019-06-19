@@ -48,6 +48,9 @@ VOTE_WARNING = 10
 EVEN_TEAMS = true --if true, teams must still be even to change teams.
 ROUNDOVER = false
 
+--      Development shit      --
+PRINT_QUERIES_IN_CONSOLE = true
+
 ----------------------------------------------------------------------
 --DO NOT EDIT BELOW THIS, UNLESS YOU KNOW WHAT YOU ARE DOING
 ----------------------------------------------------------------------
@@ -92,35 +95,35 @@ nextsec = 0
 teamtime = {}
 
 Skills = {}
-Skills[1] = { 
+Skills["speed_limit"] = { 
 	NAME = "Speed", 
 	COST = {[0] = 0, [1] = 5000, [2] = 10000, [3] = 15000, [4] = 20000, [5] = 25000, },
 	LEVEL = {[0] = 0, [1] = 10, [2] = 20, [3] = 30, [4] = 40, [5] = 50, },
 	DESCRIPTION = "This upgrade will increase your speed by 10 units per second to a maximum of 50 units per second.", 
 }
 
-Skills[2] = {
+Skills["health_limit"] = {
 	NAME = "Health",
 	COST = {[0] = 0, [1] = 6000, [2] = 12000, [3] = 18000, [4] = 24000, [5] = 30000, },
 	LEVEL = {[0] = 0, [1] = 10, [2] = 20, [3] = 30, [4] = 40, [5] = 50, },
 	DESCRIPTION = "This upgrade will give you 10 health points for each upgrade to a maximum of 50 health.",
 }
 
-Skills[3] = {
+Skills["energy_limit"] = {
 	NAME = "Max Energy",
 	COST = {[0] = 0, [1] = 6000, [2] = 12000, [3] = 18000, [4] = 24000, [5] = 30000, },
 	LEVEL = {[0] = 0, [1] = 5, [2] = 10, [3] = 15, [4] = 20, [5] = 25, },
 	DESCRIPTION = "This upgrade will increase your maximum energy by 5 energy points up to a maximum of 25 points.",
 }
 
-Skills[4] = {
+Skills["energy_regen"] = {
 	NAME = "Energy Regen",
 	COST = {[0] = 0, [1] = 5000, [2] = 10000, [3] = 15000, [4] = 20000, [5] = 25000, },
 	LEVEL = {[0] = BASE_ENERGY_REGEN, [1] = 1.1, [2] = 1.2, [3] = 1.3, [4] = 1.4, [5] = 1.5, },
 	DESCRIPTION = "This upgrade will increase your energy regeneration by 1 energy point per second to a maximum of +5",
 }
 
-Skills[5] = {
+Skills["fall_damage_resistance"] = {
 	NAME = "Fall Damage",
 	COST = {[0] = 0, [1] = 5000, [2] = 10000, [3] = 15000, [4] = 20000, [5] = 25000, },
 	LEVEL = {[0] = 5, [1] = 6, [2] = 7, [3] = 8, [4] = 9, [5] = 10, },

@@ -61,7 +61,7 @@ function SWEP:Think()
 		self.Owner:SetWalkSpeed(450)
 		self.Weapon:SetNoDraw(true)
 	else
-		self.Owner:SetWalkSpeed( oldspeed + Skills[1].LEVEL[ self.Owner.upgrades[1] ])
+		self.Owner:SetWalkSpeed( oldspeed + Skills["speed_limit"].LEVEL[ self.Owner.upgrades["speed_limit"] ])
 		self.Owner:SetNoDraw(false)
 		self.Weapon:SetNoDraw(false)
 		end
@@ -88,7 +88,7 @@ if SERVER then
 		self.Owner:SetNWBool( "cloaked", false )
 		self.Owner:SetNoDraw(false)
 		self.Weapon:SetNoDraw(false)
-		self.Owner:SetWalkSpeed( oldspeed + Skills[1].LEVEL[ self.Owner.upgrades[1] ])
+		self.Owner:SetWalkSpeed( oldspeed + Skills["speed_limit"].LEVEL[ self.Owner.upgrades["speed_limit"] ])
 		self.Weapon:SetNextSecondaryFire(CurTime() + 5)
 
 	end

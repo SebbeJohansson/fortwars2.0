@@ -98,13 +98,13 @@ memberlevel = memberlevel or 1
 playerloaded = 0
 
 net.Receive("leaderboards", function(len, pl)
-
+    
 	local accounts = net.ReadTable()
     PrintTable(accounts)
-	Msg(table.Count(accounts))
     
 	local wid, hei = 1100, 600
 	local frame = vgui.Create("DFrame")
+    frame:SetDeleteOnClose(true)
 	
 	frame:SetSkin("Default")
 	frame:SetSize(wid, hei)
@@ -126,28 +126,32 @@ net.Receive("leaderboards", function(len, pl)
 	hispanel:AddColumn("Losses")
 	hispanel:AddColumn("Hours")
 
-	timer.Simple(1, function()
-		for k, v in pairs (accounts) do
-			local playtime = v.playtime
-			if !playtime then playtime = 0 else playtime = math.Round(playtime/3600) end
-		
-			hispanel:AddLine(v.name or "Unknown", k, v.cash, v.kills or 0, v.assists or 0, v.balltime or 0, v.wins or 0, v.losses or 0, playtime)
-		end
-	end)
+    for k, v in pairs (accounts) do
+        local playtime = v.playtime
+        if !playtime then playtime = 0 else playtime = math.Round(playtime/3600) end
+    
+        hispanel:AddLine(v.name or "Unknown", v.steamid, v.cash, v.kills or 0, v.assists or 0, v.balltime or 0, v.wins or 0, v.losses or 0, playtime)
+    end
+    hispanel:SortByColumn(7, true)
 	
 	hispanel.OnClickLine = function(panel, line, selected)
 	
-	local steamID64 = util.SteamIDTo64(line:GetValue(2))
+        local steamID64 = util.SteamIDTo64(line:GetValue(2))
 	
-			local ModifyMenu = DermaMenu()
-			ModifyMenu:SetPos(gui.MousePos())
-			
-			ModifyMenu:AddOption("Open Steam Profile", function()
-				gui.OpenURL("http://steamcommunity.com/profiles/"..steamID64)
-			end):SetImage("icon16/world.png")
-			
-			ModifyMenu:Open()
-end
+        local ModifyMenu = DermaMenu()
+        ModifyMenu:SetPos(gui.MousePos())
+        
+        ModifyMenu:AddOption("Open Steam Profile", function()
+            gui.OpenURL("http://steamcommunity.com/profiles/"..steamID64)
+        end):SetImage("icon16/world.png")
+        
+        ModifyMenu:Open()
+    end
+    function frame:OnKeyCodeReleased(key)
+        if key == KEY_F2 or key == KEY_ESCAPE then
+            frame:Close()
+        end
+    end
 end)
 
 TeamsPresent = 0

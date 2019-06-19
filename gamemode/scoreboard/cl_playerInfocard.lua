@@ -93,7 +93,7 @@ function PANEL:UpdatePlayerData()
     status = "Premium" 
   end  
   self:SetInfo( 2, "Status:", status, self.Player:GetNWInt("mystatus") )
-  self:SetInfo( 2, "FW Hours:", self.Player:GetNWInt("mytime") )
+  self:SetInfo( 2, "Playtime:", self.Player:GetNWInt("mytime") )
   -- self:SetInfo( 2, "Class:", FW.ClassInfo[self.Player:GetCurrentClass()].NAME )
   
   -- self:UpdateClassString()

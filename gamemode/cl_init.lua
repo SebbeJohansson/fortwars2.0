@@ -100,7 +100,6 @@ playerloaded = 0
 net.Receive("leaderboards", function(len, pl)
     
 	local accounts = net.ReadTable()
-    PrintTable(accounts)
     
 	local wid, hei = 1100, 600
 	local frame = vgui.Create("DFrame")

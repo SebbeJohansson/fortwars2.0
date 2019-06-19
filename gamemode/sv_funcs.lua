@@ -111,15 +111,16 @@ function meta:SaveAccount()
     local memberlevel = self.memberlevel
     local classes = util.TableToJSON(self.classes)
     local specials = util.TableToJSON(self.specials)
+    local props = util.TableToJSON(self.props)
     
     DB.Query({sql = string.format([[
         INSERT INTO players
-                    (steamid, name, cash, memberlevel, classes, specials)
-        VALUES      ("%s", "%s", %i, %i, "%s", "%s")
-        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i, classes = "%s", specials = "%s"
-    ]], steamid, name, cash, memberlevel, classes, specials, name, cash, memberlevel, classes, specials)})
+                    (steamid, name, cash, memberlevel, classes, specials, props)
+        VALUES      ("%s", "%s", %i, %i, "%s", "%s", "%s")
+        ON DUPLICATE KEY UPDATE name = "%s", cash = %i, memberlevel = %i, classes = "%s", specials = "%s", props = "%s"
+    ]], steamid, name, cash, memberlevel, classes, specials, props, name, cash, memberlevel, classes, specials, props)})
     
-    DB.InsertUpdateOnDupe("upgrades", {steamid = steamid}, self.upgrades)    
+    DB.InsertUpdateOnDupe("upgrades", {steamid = steamid}, self.upgrades)
     DB.InsertUpdateOnDupe("player_stats", {steamid = steamid}, self.stats)
     
 end

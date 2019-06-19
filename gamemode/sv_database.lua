@@ -78,7 +78,7 @@ hook.Add("PlayerInitialSpawn", "CheckAccountsExist", function(ply)
                     ply.classes = util.JSONToTable(ply.DbData.classes) or {1, }
                     ply.specials = util.JSONToTable(ply.DbData.specials) or {1, }
                     ply.upgrades = ply.DbData.upgrades or DEFAULT_UPGRADES
-                    ply.props = ply.DbData.props or DEFAULT_PROPS
+                    ply.props = util.JSONToTable(ply.DbData.props) or DEFAULT_PROPS
                     ply.stats = ply.DbData.stats or DEFAULT_STATS
                     ply.memberlevel = ply.DbData.memberlevel or 1
                     
@@ -150,27 +150,32 @@ end)
 Leaderboard = {}
 Leaderboard.Players = {}
 
+function UpdateLeaderboardPlayers()
+    local mPlayers = {}
+
+    DB.Select("player_stats", {callback = 
+        function(mData)
+            for k,v in pairs(mData) do
+                local ply = {kills = v.kills, assists = v.assists, balltime = v.balltime, wins = v.wins, losses = v.losses, playtime = v.playtime}
+                mPlayers[v.steamid] = ply
+            end
+            DB.Select("players", {callback = 
+                function(mData)
+                    for k,v in pairs(mData) do
+                        local ply = {steamid = v.steamid, name = v.name, cash = v.cash}
+                        mPlayers[v.steamid] = table.Merge(mPlayers[v.steamid], ply)
+                    end
+                    Leaderboard.Players = mPlayers
+                end
+            })
+        end
+    }, "*", "wins")
+end
+UpdateLeaderboardPlayers()
+
 if ( !timer.Exists("loadloaderboardplayers") ) then
 	timer.Create("loadloaderboardplayers", 120, 0, function() 
-        local mPlayers = {}
-        DB.Select("players", "*", {callback = 
-            function(mData)
-                for k,v in pairs(mData) do
-                    local ply = {steamid = v.steamid, name = v.name, cash = v.cash}
-                    mPlayers[v.steamid] = ply
-                end
-                DB.Select("player_stats", "*", {callback = 
-                    function(mData)
-                        for k,v in pairs(mData) do
-                            local ply = {kills = v.kills, assists = v.assists, balltime = v.balltime, wins = v.wins, losses = v.losses, playtime = v.playtime}
-                            mPlayers[v.steamid] = table.Merge(mPlayers[v.steamid], ply)
-                        end
-                        Leaderboard.Players = mPlayers
-                    end
-                })
-                
-            end}
-        )
+        UpdateLeaderboardPlayers()
 	end)
 end
 
@@ -195,8 +200,8 @@ function DB.Setup()
 			cash INT,
 			memberlevel INT,
             classes VARCHAR(256),
-            stats VARCHAR(256),
             specials VARCHAR(256),
+            props VARCHAR(256),
 			Primary key (steamid)
 		)
 	]]})
@@ -210,6 +215,19 @@ function DB.Setup()
 			energy_regen INT,
             fall_damage_resistance INT,
 			Primary key (steamid)
+		)
+	]]})
+    
+    DB.Query({sql = [[CREATE TABLE IF NOT EXISTS player_stats
+		(
+			steamid VARCHAR(20),
+            kills INT(11),
+            assists INT(11),
+            balltime INT(11),
+            wins INT(11),
+            losses INT(11),
+            playtime INT(11),
+            PRIMARY KEY (steamid)
 		)
 	]]})
 end
@@ -308,11 +326,12 @@ function DB.InsertUpdateOnDupe(tblName, key, data)
     DB.Query({sql = query})
 end
 
-function DB.Select(tblName, columns, callback)
+function DB.Select(tblName, callback, columns, orderBy)
     
     local query = "SELECT "
     
     columns = columns or "*"
+    orderBy = orderBy or nil
     
     if type(columns) == "table" then
         for k,v in pairs(data) do
@@ -326,6 +345,9 @@ function DB.Select(tblName, columns, callback)
     end
     
     query = query..columns.." FROM "..tblName
+    if orderBy then
+        query = query.." ORDER BY "..orderBy
+    end
     
     DB.Query({sql = query, callback = callback.callback})
     
@@ -333,7 +355,7 @@ end
 
 
 DB.Connect()
-hook.Add( "OnReloaded" , "OnReloadedHook" , function()
+/*hook.Add( "OnReloaded" , "OnReloadedHook" , function()
     DB.Disconnect()
     print("Current Connections:")
     PrintTable(tmysql.GetTable()) 
@@ -343,5 +365,5 @@ hook.Add( "OnReloaded" , "OnReloadedHook" , function()
     end
     DB.Connected = false
     DB.Connect()
-end)
+end)*/
 

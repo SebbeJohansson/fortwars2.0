@@ -169,13 +169,14 @@ function UpdateLeaderboardPlayers()
                 end
             })
         end
-    }, "*", "wins")
+    }, "*")
 end
-UpdateLeaderboardPlayers()
 
 if ( !timer.Exists("loadloaderboardplayers") ) then
-	timer.Create("loadloaderboardplayers", 120, 0, function() 
+    local time = 5
+	timer.Create("loadloaderboardplayers", time, 0, function() 
         UpdateLeaderboardPlayers()
+        time = 120
 	end)
 end
 

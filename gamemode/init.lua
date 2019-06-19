@@ -452,11 +452,11 @@ end
 
 function InitialSpawnPlayer(ply)
     ply:SetNWInt("mymoney", ply.cash)
-    ply:SetNWInt("mykills", ply.stats[1])
-    ply:SetNWInt("myassists", ply.stats[2])
-    ply:SetNWInt("myballtime", ply.stats[3])
-    ply:SetNWInt("mywins", ply.stats[4])
-    ply:SetNWInt("mylosses", ply.stats[5])
+    ply:SetNWInt("mykills", ply.stats['kills'])
+    ply:SetNWInt("myassists", ply.stats['assists'])
+    ply:SetNWInt("myballtime", ply.stats['balltime'])
+    ply:SetNWInt("mywins", ply.stats['wins'])
+    ply:SetNWInt("mylosses", ply.stats['losses'])
     ply:SetNWInt("mytime", math.Round(ply.stats["playtime"] / 3600))
     ply:SetNWInt("mystatus", ply.memberlevel)
 
@@ -812,7 +812,7 @@ function GM:PlayerDeath(victim, weapon, killer)
     if (victim.myassistor != killer and IsValid(victim.myassistor) and IsValid(killer) and killer != victim and victim.lastattack > CurTime()) then
 
         victim.myassistor:SetNWInt("Assists", victim.myassistor:GetNWInt("Assists") + 1)
-        victim.myassistor.stats[2] = victim.myassistor.stats[2] + 1
+        victim.myassistor.stats['assists'] = victim.myassistor.stats['assists'] + 1
         victim.myassistor:AddMoney(ASSIST_MONEY)
 
 
@@ -868,7 +868,7 @@ function GM:PlayerDeath(victim, weapon, killer)
         killer:AddFrags(1)
         killer.currentLifeKills = killer.currentLifeKills + 1
         killer.multiKills = killer.multiKills + 1
-        killer.stats[1] = killer.stats[1] + 1
+        killer.stats['kills'] = killer.stats['kills'] + 1
 
         if killer.killTime + 4 > CurTime() then -- check for multi kill
 
@@ -1115,7 +1115,7 @@ function GameOver(winner)
 
         v:ConCommand("play " .. WIN_SONG)
 
-        v.stats[4] = v.stats[4] + 1
+        v.stats['wins'] = v.stats['wins'] + 1
     end
 
     for k, v in pairs(player.GetAll()) do
@@ -1124,7 +1124,7 @@ function GameOver(winner)
 
         if v:Team() != winner then
             v:ConCommand("play " .. LOSE_SONG)
-            v.stats[5] = v.stats[5] + 1
+            v.stats['losses'] = v.stats['losses'] + 1
         end
     end
 
@@ -1144,7 +1144,7 @@ function GM:GravGunOnPickedUp(ply, ent)
             if DM_MODE == true then
                 TeamInfo[ballcarrier:Team()].HoldTime = TeamInfo[ballcarrier:Team()].HoldTime - 1
                 ballcarrier.BallSecs = ballcarrier.BallSecs + 1
-                ballcarrier.stats[3] = ballcarrier.stats[3] + 1
+                ballcarrier.stats['balltime'] = ballcarrier.stats['balltime'] + 1
 
                 if ballcarrier:IsPremium() then
                     ballcarrier:AddMoney(BALL_MONEY + PREM_BALL_BONUS)
@@ -1180,7 +1180,7 @@ end
 
 function GM:GetFallDamage(ply, speed)
     speed = speed - 580
-    if tonumber(ply:GetPData("Class")) != 3 then return speed * (1 / Skills[5].LEVEL[ply.upgrades["fall_damage_resistance"]]) end
+    if tonumber(ply:GetPData("Class")) != 3 then return speed * (1 / Skills["fall_damage_resistance"].LEVEL[ply.upgrades["fall_damage_resistance"]]) end
 end
 
 function GM:EntityTakeDamage(ply, dmginfo)

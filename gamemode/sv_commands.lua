@@ -256,7 +256,7 @@ concommand.Add( "playerstats", function(ply, cmd, args)
 		SendChatText( ply, Color( 255, 255, 255 ), "Usage: /stats <name/userid>")
 		return
 	end
-	SendChatText( ply, Color( 255, 255, 255 ), "["..name:Nick().."] Kills: " .. name.stats[1] .. " Assists: " .. name.stats[2] .. " Balltime: " .. name.stats[3] .. " seconds Money: $" .. name.cash .. " Wins: " .. name.stats[4] .. " Losses: " .. name.stats[5] .. "Play time: " .. name.stats["playtime"])
+	SendChatText( ply, Color( 255, 255, 255 ), "["..name:Nick().."] Kills: " .. name.stats['kills'] .. " Assists: " .. name.stats['assists'] .. " Balltime: " .. name.stats['balltime'] .. " seconds Money: $" .. name.cash .. " Wins: " .. name.stats['wins'] .. " Losses: " .. name.stats['losses'] .. "Play time: " .. name.stats["playtime"])
 end)
 
 concommand.Add( "givemoney", function(ply, cmd, args)
@@ -430,12 +430,8 @@ concommand.Add("chooseteam", chooseTeam)
 
 --Gonna need to make a 100 account max or so with this, because of the net library limit
 concommand.Add("fw_leaderboards", function( ply, cmd, args )
-
-	local tbl = {}
-	
-	for k, v in pairs (Leaderboard.Players) do
-		tbl = table.ForceInsert(tbl, v)
-	end
+    print("leaderboard was used")
+	local tbl = Leaderboard.Players
     
 	net.Start("leaderboards")
 	net.WriteTable(tbl)

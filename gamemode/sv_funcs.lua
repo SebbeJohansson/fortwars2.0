@@ -26,7 +26,6 @@ function meta:AddMoney(i)
 	net.Start("updatecash")
 		net.WriteInt(self.cash, 32)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:TakeMoney(i)
@@ -34,7 +33,6 @@ function meta:TakeMoney(i)
 	net.Start("updatecash")
 		net.WriteInt(self.cash, 32)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:SetMoney(i)
@@ -42,7 +40,6 @@ function meta:SetMoney(i)
 	net.Start("updatecash")
 		net.WriteInt(self.cash, 32)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:AddClass(i)
@@ -50,7 +47,6 @@ function meta:AddClass(i)
 	net.Start("updateclasses")
 		net.WriteTable(self.classes)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:AddSpecial(i)
@@ -58,7 +54,6 @@ function meta:AddSpecial(i)
 	net.Start("updatespecials")
 		net.WriteTable(self.specials)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:HasSpecial(i)
@@ -70,7 +65,6 @@ function meta:LevelUp(i)
 	net.Start("updatelevels")
 		net.WriteTable(self.upgrades)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:AddProp(i)
@@ -78,7 +72,6 @@ function meta:AddProp(i)
 	net.Start("updateprops")
 		net.WriteTable(self.props)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:SetDonor(i)
@@ -86,7 +79,6 @@ function meta:SetDonor(i)
 	net.Start("updatedonor")
 		net.WriteInt(self.memberlevel, 32)
 	net.Send(self)
-	//self:SaveAccount()
 end
 
 function meta:IsPremium()

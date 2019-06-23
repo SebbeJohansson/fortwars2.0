@@ -102,10 +102,10 @@ end
 ---------------------------------------------------------*/
 function PANEL:PerformLayout()
   self.Hostname:SizeToContents()
-  self.Hostname:SetPos( self:GetWide()/3.2, 16 )
+  self.Hostname:SetPos((self:GetWide()/2) - (self.Hostname:GetWide()/2), 16)
   
   self.Description:SizeToContents()
-  self.Description:SetPos( self:GetWide()/2.7, 64 )
+  self.Description:SetPos((self:GetWide()/2) - (self.Description:GetWide()/2), 64)
   
   local iTall = self.PlayerFrame:GetCanvas():GetTall() + self.Description.y + self.Description:GetTall() + 30
   iTall = math.Clamp( iTall, 100, ScrH() * 0.9 )
@@ -198,7 +198,7 @@ function PANEL:Paint()
   -- Inner Grey Box
   draw.RoundedBox( 4, 4, self.Description.y - 4, self:GetWide() - 8, self:GetTall() - self.Description.y - 4, Color( 60, 60, 60, 200 ))
   -- Sub Header
-  draw.RoundedBox( 4, 5, self.Description.y - 3, self:GetWide() - 10, self.Description:GetTall() + 5, Color( 54, 122, 56, 200 ))
+  draw.RoundedBox( 4, 5, self.Description.y - 3, self:GetWide() - 10, self.Description:GetTall() + 5, Color( 94, 99, 103, 200 ))
   //surface.SetTexture( texGradient )
   surface.SetDrawColor( 255, 255, 255, 30 )
  // surface.DrawTexturedRect( 5, self.Description.y - 3, self:GetWide() - 10, self.Description:GetTall() + 5 )   

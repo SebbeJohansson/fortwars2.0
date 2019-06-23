@@ -39,9 +39,9 @@ local m_desc = {"Voteskips", "Votemaps", "Ball Holding Bonus", "Money per kill",
 local dollas = "You can also receive $20, 000 FW Cash for each $1 USD you donate."
 
 function PANEL:Init()
-  self:SetSize(900, 500)
-  // Disabled donations tab until we know what to do with it.
-    self.tabNames = {"Help", "Classes", "Upgrades"/*, "Donations"*/, "Options"}
+    self:SetSize(900, 500)
+    // Disabled donations tab until we know what to do with it.
+    self.tabNames = {"Help", "Classes", "Upgrades", "Donations", "Options"}
     self.selectedClass = 1
     self.selectedSkill = "speed_limit"
     --Hold all the items in a 1D table and loop to set visibility to false/true...
@@ -147,66 +147,66 @@ function PANEL:Init()
         draw.SimpleTextOutlined("What is the objective of fortwars?", "ClassName", 10, 10, Color(255, 255, 255, 255), 0, 3, 1, Color(0, 0, 0, 255))
 
         draw.DrawText([[
-		The objective of fortwars is to hold the ball for 5 minutes in order to win the round for your team. 
-		Each round starts with build mode, in which you and your team work together to create a strong base to hold the ball in. When fight mode 
-		starts, players of each team fight with their various classes over the ball.]], "Default", 10, 40, Color(255, 255, 255, 255), 0)
+        The objective of fortwars is to hold the ball for 5 minutes in order to win the round for your team. 
+        Each round starts with build mode, in which you and your team work together to create a strong base to hold the ball in. When fight mode 
+        starts, players of each team fight with their various classes over the ball.]], "Default", 10, 40, Color(255, 255, 255, 255), 0)
 
 
         draw.SimpleTextOutlined("How do I earn money?", "ClassName", 10, 100, Color(255, 255, 255, 255), 0, 3, 1, Color(0, 0, 0, 255))
 
         draw.DrawText([[
-		There are various ways to earn money. You can earn money from killing an enemy or getting an assist, holding the 
-		ball, and winning rounds. Money can be spent on building a base or buying different classes and upgrades in the F1 menu.]], "Default", 10, 130, Color(255, 255, 255, 255), 0)
+        There are various ways to earn money. You can earn money from killing an enemy or getting an assist, holding the 
+        ball, and winning rounds. Money can be spent on building a base or buying different classes and upgrades in the F1 menu.]], "Default", 10, 130, Color(255, 255, 255, 255), 0)
 
         draw.SimpleTextOutlined("What should I buy?", "ClassName", 10, 170, Color(255, 255, 255, 255), 0, 3, 1, Color(0, 0, 0, 255))
 
         draw.DrawText([[
-		You start off with $12k and the defualt human class. You have a few choices in spending your money. Firstly, you can 
-		buy the cost efficient Gunner for $6k, with a deagle doing significantly more damage than the Human's glock. You will have an extra $6k 
-		after buying gunner, so you can either save that money or use it to buy an upgrade, or build bases. Another option is to buy a more 
-		expensive class, for $10k you can get Raider. Raider has a mac-10 and has a quick movement speed. This is a good offesnive class, and can 
-		later be upgraded with his special, which triples Raider's movement speed for a period of time. For the full $12k you start with, the 
-		defensive oriented Guardian can be purchased. Guardian uses a double barrel shotgun, and if used in a close quarters situation such as in 
-		a base, this class is very deadly. Lastly, you can stick with human for a while to earn some cash, saving for; Ninja for $15k, a quick, agile 
-		class that can jump high and easily retrieve the ball, or Hitman for $20k, a sniper able to do up to 140 damage with a headshot.]], "Default", 10, 200, Color(255, 255, 255, 255), 0)
+        You start off with $12k and the defualt human class. You have a few choices in spending your money. Firstly, you can 
+        buy the cost efficient Gunner for $6k, with a deagle doing significantly more damage than the Human's glock. You will have an extra $6k 
+        after buying gunner, so you can either save that money or use it to buy an upgrade, or build bases. Another option is to buy a more 
+        expensive class, for $10k you can get Raider. Raider has a mac-10 and has a quick movement speed. This is a good offesnive class, and can 
+        later be upgraded with his special, which triples Raider's movement speed for a period of time. For the full $12k you start with, the 
+        defensive oriented Guardian can be purchased. Guardian uses a double barrel shotgun, and if used in a close quarters situation such as in 
+        a base, this class is very deadly. Lastly, you can stick with human for a while to earn some cash, saving for; Ninja for $15k, a quick, agile 
+        class that can jump high and easily retrieve the ball, or Hitman for $20k, a sniper able to do up to 140 damage with a headshot.]], "Default", 10, 200, Color(255, 255, 255, 255), 0)
 
         draw.SimpleTextOutlined("Rules:", "ClassName", 10, 300, Color(255, 255, 255, 255), 0, 3, 1, Color(0, 0, 0, 255))
 
         draw.DrawText([[
-		
-		• Do not spam props to intentionally use up all of your team's props, especially if someone is trying to build a base. 
-		(This is mostly directed at people who know how to play the game but are trolling. If a new person is doing this, just let them know
-		that they are wasting all the props.)
+        
+        • Do not spam props to intentionally use up all of your team's props, especially if someone is trying to build a base. 
+        (This is mostly directed at people who know how to play the game but are trolling. If a new person is doing this, just let them know
+        that they are wasting all the props.)
 
-		• Don't grief/minge. This includes fucking with someone's base, and setting your spawn in unfavorable places (particularly in someone 
-		elses base when they don't want you to). Just use common sense and don't be a dick. Again, new people may not know that they are doing 
-		something wrong, so let them know if they are.
+        • Don't grief/minge. This includes fucking with someone's base, and setting your spawn in unfavorable places (particularly in someone 
+        elses base when they don't want you to). Just use common sense and don't be a dick. Again, new people may not know that they are doing 
+        something wrong, so let them know if they are.
 
-		• Don't push props through the build walls.
+        • Don't push props through the build walls.
 
-		• Don't push yourself through the build walls (We will sometimes allow this in good spirits, it's not really a big deal if you aren't 
-		fucking with other people, and rather just having fun).
+        • Don't push yourself through the build walls (We will sometimes allow this in good spirits, it's not really a big deal if you aren't 
+        fucking with other people, and rather just having fun).
 
-		• Don't prop push people (Again, we will sometimes allow this if it's just in good spirits or if it's just a friend, not really a big deal).
+        • Don't prop push people (Again, we will sometimes allow this if it's just in good spirits or if it's just a friend, not really a big deal).
 
-		• Certain exploits are allowed to an extent. For example, using parts of the map to make an overpowered base is allowed, closed bases 
-		are allowed.
+        • Certain exploits are allowed to an extent. For example, using parts of the map to make an overpowered base is allowed, closed bases 
+        are allowed.
 
-		• Do not impersonate staff, other users, or bots.
+        • Do not impersonate staff, other users, or bots.
 
-		• Do not spam chat/voice.
+        • Do not spam chat/voice.
 
-		• No children talking on the mic, use the chat instead please.
+        • No children talking on the mic, use the chat instead please.
 
-		• Don't be toxic or harass other users.
+        • Don't be toxic or harass other users.
 
-		• Freedom of speech applies here. Swearing/racism is allowed, just don't be too excessive. Again, don't be targeting/harassing other 
-		people though.
+        • Freedom of speech applies here. Swearing/racism is allowed, just don't be too excessive. Again, don't be targeting/harassing other 
+        people though.
 
-		• Do not post personal information such as phone numbers.
-		
-		
-		]], "Default", 10, 320, Color(255, 255, 255, 255), 0)	
+        • Do not post personal information such as phone numbers.
+        
+        
+        ]], "Default", 10, 320, Color(255, 255, 255, 255), 0)	
 
 
 
@@ -214,12 +214,12 @@ function PANEL:Init()
         draw.SimpleTextOutlined("Chat Commands:", "ClassName", 10, 700, Color(255, 255, 255, 255), 0, 3, 1, Color(0, 0, 0, 255))
 
         draw.DrawText([[
-		/givemoney name amount  -  Gives a specified amount of money to a player if they are on the server.
-		/voteskip  -  Vote to skip buildmode.  Regular members get 1 voteskip, Premium get 2, Platinum get 4.
-		/resetspawn  -  Resets your current spawnpoint back to a default spawn.  Works in both build and fight mode.
-		/stats - Prints your stats to your chat window. (Or you can use the scoreboard)
-		/pm name message - PMs a player if they are on the server.
-		/r message - Replies to the last pm sent.]], "Default", 10, 730, Color(255, 255, 255, 255), 0)
+        /givemoney name amount  -  Gives a specified amount of money to a player if they are on the server.
+        /voteskip  -  Vote to skip buildmode.  Regular members get 1 voteskip, Premium get 2, Platinum get 4.
+        /resetspawn  -  Resets your current spawnpoint back to a default spawn.  Works in both build and fight mode.
+        /stats - Prints your stats to your chat window. (Or you can use the scoreboard)
+        /pm name message - PMs a player if they are on the server.
+        /r message - Replies to the last pm sent.]], "Default", 10, 730, Color(255, 255, 255, 255), 0)
 
 
         --------------------------
@@ -446,7 +446,6 @@ function PANEL:Init()
           draw.SimpleText("You already have this special ability.", "ClassNameSmall", 10, 200, Color(255, 0, 0, 255), 0, 1)
         end
         draw.DrawText("\t             	"..Classes[self.selectedClass].SPECIALABILITY, "Default", 10, 134, Color(255, 255, 255, 255), ALIGN_LEFT)
-        --draw.SimpleText("Special Ability Price:\t\t"..str, "ClassNameSmall", 10, 200, Color(255, 255, 255, 255), 0, 1)
       end
 
       local col = Color(255, 0, 0, 255)
@@ -562,7 +561,7 @@ function PANEL:Init()
     skillList:SetSpacing(2)
     skillList:SetWide(250)
     skillList:EnableVerticalScrollbar()
-    
+
     for i, v in pairs(Skills) do
       local p = vgui.Create("Panel")
       p.OnCursorEntered = function() p.Hovered = true end
@@ -666,7 +665,6 @@ function PANEL:Init()
         local tbl = buyableProps[self.selectedProp]
         draw.RoundedBox(0, 0, 0, skillPanel:GetWide(), skillPanel:GetTall(), Color(50, 50, 50, 200))
         draw.SimpleText(tbl.NAME, "ClassNameLarge", skillPanel:GetWide()*0.5, 20, Color(0, 0, 0, 255), 1, 1)
-        --draw.DrawText(util.WordWrap("About this prop: ", "Default", 1200), "Default", 10, 60, Color(255, 255, 255, 255), 0, 1)
         local col = Color(255, 0, 0, 255)
         if cash >= tbl.COST and !table.HasValue( myprops, self.selectedProp ) then
 
@@ -691,7 +689,7 @@ function PANEL:Init()
     propModel:SetCamPos(Vector(0, 250, 60))
 
     --DONATIONS TAB
-    /*local donPanel = vgui.Create("DPanel", self)
+    local donPanel = vgui.Create("DPanel", self)
     donPanel.tab = 4
     donPanel:StretchToParent(20, 125, 20, 20)
     donPanel.Paint = function()
@@ -725,11 +723,11 @@ function PANEL:Init()
       draw.SimpleText("Join our Discord at https://discord.gg/3uBD8k2 for more info on donations.", "Default", donPanel:GetWide()*0.5+2, donPanel:GetTall()-22, Color(0, 0, 0, 255), 1, 1)
     end
 
-    table.insert(self.dispItems, donPanel)*/
+    table.insert(self.dispItems, donPanel)
 
 
     local optPanel = vgui.Create("DPanel", self)
-    optPanel.tab = 4//5
+    optPanel.tab = 5//4
     optPanel:StretchToParent(20, 125, 20, 20)
     optPanel.Paint = function()
       local col = team.GetColor(Me:Team())
@@ -962,36 +960,37 @@ function PANEL:Init()
 
     self:RefreshTabs()
 
-  end
+end
 
 
 --much better :D
-  function PANEL:RefreshTabs()
+function PANEL:RefreshTabs()
     for i, v in pairs(self.dispItems) do
       v:SetVisible(v.tab == self.currentTab)
     end
-  end
+end
 
-  function PANEL:Paint()
+function PANEL:Paint()
     gui.EnableScreenClicker(true) -- make sure cursor stays visible
     surface.SetTexture(surface.GetTextureID("darkland/f1bg_temp"))
     local col = team.GetColor(Me:Team())
     surface.SetDrawColor(math.Clamp(90+col.r, 0, 255), math.Clamp(90+col.g, 0, 255), math.Clamp(90+col.b, 0, 255), 255)
     surface.DrawTexturedRect(0, 0, self:GetWide(), self:GetTall())
-  end
-  vgui.Register("fw_menu", PANEL, "DPanel")
+end
+vgui.Register("fw_menu", PANEL, "DPanel")
 
-  function CreateMenu()
+function CreateMenu()
     if !ValidPanel(g_fwMenu) then
       g_fwMenu = vgui.Create("fw_menu")
       g_fwMenu:Center()
       g_fwMenu:SetVisible(false) --Little hacky so the next thing works good :D
     end
+
     mutemenu.updatePList()
     g_fwMenu:SetVisible(!g_fwMenu:IsVisible())
     if !g_fwMenu:IsVisible() then RememberCursorPosition() end
     gui.EnableScreenClicker(g_fwMenu:IsVisible())
     if g_fwMenu:IsVisible() then RestoreCursorPosition() end
-  end
-  hook.Add("FullyLoaded", "CreateMenu", CreateMenu)
-  concommand.Add("fw_help", CreateMenu)
+end
+hook.Add("FullyLoaded", "CreateMenu", CreateMenu)
+concommand.Add("fw_help", CreateMenu)

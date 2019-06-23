@@ -28,23 +28,23 @@ end
 - @param v - value
 --]]
 function PANEL:SetInfo( column, k, v )
-  if not self.rowCol[column] then
-    self.rowCol[column] = 0
-  end
-  if not v or v == ""  then 
-    v = "N/A" 
-  end
-  if not self.InfoLabels[column][k] then
-    self.InfoLabels[column][k] = {}
-    self.InfoLabels[column][k].Key   = vgui.Create( "DLabel", self )
-    self.InfoLabels[column][k].Value   = vgui.Create( "DLabel", self )
-    self.InfoLabels[column][k].Key:SetText( k )
-    self.InfoLabels[column][k].Row = self.rowCol[column]
-    self:InvalidateLayout()
-  end
-  
-  self.InfoLabels[column][k].Value:SetText( v )
-  self.rowCol[column]  = self.rowCol[column] + 1
+    if not self.rowCol[column] then
+        self.rowCol[column] = 0
+    end
+    if not v or v == ""  then 
+        v = "N/A" 
+    end
+    if not self.InfoLabels[column][k] then
+        self.InfoLabels[column][k] = {}
+        self.InfoLabels[column][k].Key   = vgui.Create( "DLabel", self )
+        self.InfoLabels[column][k].Value   = vgui.Create( "DLabel", self )
+        self.InfoLabels[column][k].Key:SetText( k )
+        self.InfoLabels[column][k].Row = self.rowCol[column]
+        self:InvalidateLayout()
+    end
+
+    self.InfoLabels[column][k].Value:SetText( v )
+    self.rowCol[column]  = self.rowCol[column] + 1
 end
 
 
@@ -55,17 +55,18 @@ end
 - @param ply - player to set infocard to
 --]]
 function PANEL:SetPlayer( ply )
-  self.Player = ply
-  self:UpdatePlayerData()
+    self.Player = ply
+    self:UpdatePlayerData()
   
   
-  timer.Simple(2, function()
-  if self.Player:GetNWString("ADMDisguise") != "" then
-	self.imgAvatar:SetSteamID("76561197974983106")
-  else
-    self.imgAvatar:SetPlayer( ply )
-  end
-	end)
+    timer.Simple(2, function()
+        if self.Player:GetNWString("ADMDisguise") != "" then
+            // Below steamid is a steamuser that hasnt been online for over 3000 days who will probebly never go online. Resulting image is the default steam image.
+            self.imgAvatar:SetSteamID("76561197974983106")
+        else
+            self.imgAvatar:SetPlayer( ply )
+        end
+    end)
 end
 
 --[[  

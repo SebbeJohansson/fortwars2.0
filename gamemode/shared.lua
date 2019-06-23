@@ -1,4 +1,4 @@
-GM.Name     = "FortWars 2.0"
+GM.Name     = "FortWars 13"
 GM.Author   = "Red - Continuation from the work of g33k & Darkspider"
 GM.Email    = ""
 GM.Website  = "" 
@@ -39,7 +39,7 @@ WIN_MONEY = 1000
 BALL_MONEY = 5
 MAX_PROPS = 150
 ENDGAME_TIME = 30
-LOSE_SONG = "darkland/fortwars/WinTest.mp3"
+LOSE_SONG = "darkland/fortwars/wintest.mp3"
 WIN_SONG = "darkland/fortwars/win9.mp3"
 RESPAWN_TIME = 3 --time in seconds you must wait before respawning
 VOTE_THRESH = 0.6
@@ -49,11 +49,12 @@ EVEN_TEAMS = true --if true, teams must still be even to change teams.
 ROUNDOVER = false
 
 --      Development shit      --
-PRINT_QUERIES_IN_CONSOLE = true
+PRINT_QUERIES_IN_CONSOLE = false
 
 ----------------------------------------------------------------------
 --DO NOT EDIT BELOW THIS, UNLESS YOU KNOW WHAT YOU ARE DOING
 ----------------------------------------------------------------------
+
 
 function GM:PlayerBindPress(ply, bind, pressed)
 	//if string.find(bind, "phys_swap") then 

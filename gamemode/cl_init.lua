@@ -345,7 +345,7 @@ draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's time
 		
 			local c = team.GetColor(i)
 			draw.RoundedBox(0, 29, 65 + num * 16, 242, 13, Color(0, 0, 0, 100))
-			surface.SetTexture(surface.GetTextureID("darkland/fortwars/timerBar"))
+			surface.SetTexture(surface.GetTextureID("darkland/fortwars/timerbar"))
 		
 			//if holdingTeam == i then 
 			//	c = Color(math.Clamp((c.r + 75), 0, 255), math.Clamp((c.g + 75), 0, 255), math.Clamp((c.b + 75), 0, 255), 210)

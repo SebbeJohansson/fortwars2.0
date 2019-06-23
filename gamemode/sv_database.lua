@@ -2,6 +2,15 @@ DEFAULT_STATS = {kills = 0, assists = 0, balltime = 0, wins = 0, losses = 0, pla
 DEFAULT_UPGRADES = {speed_limit = 0, health_limit = 0, energy_limit = 0, energy_regen = 0, fall_damage_resistance = 0}
 DEFAULT_PROPS = {}
 
+Msg("Loading workshop items: \n")
+local WorkshopItems = {
+    1778934169
+}
+for k, v in pairs( WorkshopItems ) do
+    Msg("Adding: "..v.."("..k..")\n")
+    resource.AddWorkshop(v)
+end
+
 /*---------------------------------------------------------
   Handles profile creation for new players and profile loading
   for players that have already joined

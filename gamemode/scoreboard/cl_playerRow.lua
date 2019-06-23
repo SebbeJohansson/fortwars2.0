@@ -3,7 +3,6 @@ include( "cl_playerInfocard.lua" )
 //surface.CreateFont( "Defult", 13, 700, true, false, "ScoreboardPlyInfo" )
 //surface.CreateFont( "Defult", 16, 700, true, false, "ScoreboardPlyName" )
 
-local texGradient = surface.GetTextureID( "gui/center_gradient" )
 local ROW_HEIGHT = 20
 
 local PANEL = {}
@@ -51,20 +50,11 @@ function PANEL:Paint()
   if self.Open or self.Size ~= self.TargetSize then
     draw.RoundedBox( 4, 0, 16, self:GetWide(), self:GetTall() - 16, color )
     draw.RoundedBox( 4, 2, 16, self:GetWide() - 4, self:GetTall() - 16 - 2, Color( 250, 250, 245, 180 ))
-    surface.SetTexture( texGradient )
-    surface.SetDrawColor( 255, 255, 255, 220 )
-    surface.DrawTexturedRect( 2, 16, self:GetWide() - 4, self:GetTall() - 16 - 2 ) 
   end
   
   draw.RoundedBox( 4, 0, 0, self:GetWide(), ROW_HEIGHT, color )
   
-  surface.SetTexture( texGradient )
-  if self.Player == LocalPlayer() then
-    surface.SetDrawColor( 255, 255, 255, 150 + math.sin( RealTime() * 2 ) * 50 )
-  else
-    surface.SetDrawColor( 255, 255, 255, 50 )
-  end
-  surface.DrawTexturedRect( 0, 0, self:GetWide(), ROW_HEIGHT ) 
+  surface.DrawRect( 0, 0, self:GetWide(), ROW_HEIGHT ) 
     
   if self.Player:GetFriendStatus() == "friend" then
 		surface.SetMaterial( self.texRating )

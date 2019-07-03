@@ -98,6 +98,7 @@ resource.AddFile("sound/darkland/chatmessage.wav")
 TeamsThisMap = {}
 ballcarrier = 0
 roundEnd = ENDGAME_TIME
+ballentid = 0
 
 players = {}
 EntTeam = {}
@@ -372,7 +373,6 @@ end
 function GM:AdjustMouseSensitivity()
     return 1
 end
-
 function assignPlayerTeam(ply)
     if  !IsValid(ply) or ply:Team() == (1 or 2 or 3 or 4) then return end -- he picked a team already
 
@@ -384,18 +384,6 @@ function assignPlayerTeam(ply)
     end
     table.sort(t, function(a, b) return team.NumPlayers(a) < team.NumPlayers(b) end)
     ply:UnSpectate()
-
-
-    if table.Count(t) == 0 then
-        print("No teams. Something has happened. Reloading post entiies")
-        GAMEMODE:InitPostEntity()
-        for i, v in pairs(TeamInfo) do
-            if v.Present then
-                table.insert(t, i)
-            end
-        end
-        table.sort(t, function(a, b) return team.NumPlayers(a) < team.NumPlayers(b) end)
-    end
 
     ply:SetTeam(t[1])
     local c = team.GetColor(t[1])
@@ -726,9 +714,12 @@ function GM:Think()
         StartDM()
 
     elseif DM_TIMER <= 0 and DM_MODE == true then --change to build mode
+        if ballentid != 0 then
+            Entity(ballentid):Remove()
+        end
         StartBuild()
     end
-
+    
     if roundEnd <= 0 then
         ChangeMap()
     end
@@ -1258,6 +1249,9 @@ function StartBuild()
         net.Send(v)
     end
     ballcarrier = 0
+    if ballentid != 0 then
+        Entity(ballentid):Remove()
+    end
     timer.Destroy("balltimer")
     CreateBall()
 end
@@ -1323,11 +1317,35 @@ function CreateBall()
 
         local rp = RecipientFilter()
         rp:AddAllPlayers()
+        ballentid = ent:EntIndex()
         net.Start("ballentid")
         net.WriteInt(ent:EntIndex(), 32)
         net.Send(rp)
 
     elseif DM_MODE == false then
         //ent:Remove()
-    end
+    end 
 end
+
+
+hook.Add( "OnReloaded" , "OnReloadedHook" , function()
+    print("On Reloaded")
+    // First remove all entiteis.
+    for k, v in pairs(ents.FindByClass("spawn_marker")) do
+        Entity(v:EntIndex() ):Remove()
+    end 
+    
+    if ballentid != 0 then
+        Entity(ballentid):Remove()
+    end
+    
+    GAMEMODE:InitPostEntity()
+    local t = {}
+    for i, v in pairs(TeamInfo) do
+        if v.Present then
+            table.insert(t, i)
+        end
+    end
+    table.sort(t, function(a, b) return team.NumPlayers(a) < team.NumPlayers(b) end)
+    StartBuild()
+end)

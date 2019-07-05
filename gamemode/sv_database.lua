@@ -1,3 +1,10 @@
+include("sv_config.lua")
+
+if Config == nil then
+    Msg("\n\n\nHi there! Looks like the 'sv_config.lua' file is missing!\n")
+    Msg("Please copy 'sv_config.example.lua', add your info, and rename it to 'sv_config.lua' and place it in the 'fortwars/gamemode' folder. K THX.\n\n\n")
+end
+
 DEFAULT_STATS = {kills = 0, assists = 0, balltime = 0, wins = 0, losses = 0, playtime = 0}
 DEFAULT_UPGRADES = {speed_limit = 0, health_limit = 0, energy_limit = 0, energy_regen = 0, fall_damage_resistance = 0}
 DEFAULT_PROPS = {}
@@ -194,11 +201,11 @@ require("tmysql4")
 DB = {}
 DB.MySql = {}
 DB.Connected = false
-DB.Host = "hostaddress"
-DB.Database = "databasename"
-DB.Port = 3306
-DB.Username = "admin"
-DB.Password = "password"
+DB.Host = Config.DB.Host
+DB.Database = Config.DB.Database
+DB.Port = Config.DB.Port
+DB.Username = Config.DB.Username
+DB.Password = Config.DB.Password
 
 function DB.Setup()
 	print("[MySQL Msg] Checking / Creating Tables")

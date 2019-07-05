@@ -1176,35 +1176,37 @@ end
 
 function GM:EntityTakeDamage(ply, dmginfo)
 
-    local inflictorType = dmginfo:GetInflictor():GetClass()
-    local inflictor = dmginfo:GetInflictor()
-    local attacker = dmginfo:GetAttacker()
-    local amount = dmginfo:GetDamage()
+    if ply:Team() != TEAM_SPECTATOR then
+        local inflictorType = dmginfo:GetInflictor():GetClass()
+        local inflictor = dmginfo:GetInflictor()
+        local attacker = dmginfo:GetAttacker()
+        local amount = dmginfo:GetDamage()
 
 
 
-    if (ply:IsPlayer() and dmginfo:GetDamageType() == DMG_CRUSH and (dmginfo:GetInflictor():GetClass() == "swatnade" or dmginfo:GetInflictor():GetClass() == "sent_rpgrocket")) then
+        if (ply:IsPlayer() and dmginfo:GetDamageType() == DMG_CRUSH and (dmginfo:GetInflictor():GetClass() == "swatnade" or dmginfo:GetInflictor():GetClass() == "sent_rpgrocket")) then
 
-        dmginfo:ScaleDamage(0)
-
-    elseif ply:GetNWBool("outtamyway") == true and ply:IsPlayer() then
-        dmginfo:ScaleDamage(.5)
-
-        // temp gunner special
-
-        elseif ply:IsPlayer() and ply:GetActiveWeapon():GetClass() == "gunner_gun" and dmginfo:IsBulletDamage() and ply:HasSpecial(2) then
-
-        ply:TakeEnergy(amount * 1.5)
-
-        if ply:GetNWInt('energy') > 0 then
             dmginfo:ScaleDamage(0)
-            ply:EmitSound(Sound("darkland/fortwars/ninja_dodge" .. tostring(math.random(1, 4)) .. ".wav"), 100, 100)
-        else
-            dmginfo:ScaleDamage(1)
-        end
-    end
 
-    return dmginfo
+        elseif ply:GetNWBool("outtamyway") == true and ply:IsPlayer() then
+            dmginfo:ScaleDamage(.5)
+
+            // temp gunner special
+
+            elseif ply:IsPlayer() and ply:GetActiveWeapon():GetClass() == "gunner_gun" and dmginfo:IsBulletDamage() and ply:HasSpecial(2) then
+
+            ply:TakeEnergy(amount * 1.5)
+
+            if ply:GetNWInt('energy') > 0 then
+                dmginfo:ScaleDamage(0)
+                ply:EmitSound(Sound("darkland/fortwars/ninja_dodge" .. tostring(math.random(1, 4)) .. ".wav"), 100, 100)
+            else
+                dmginfo:ScaleDamage(1)
+            end
+        end
+
+        return dmginfo
+    end
 end
 
 function StartDM()

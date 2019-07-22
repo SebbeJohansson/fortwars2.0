@@ -95,7 +95,7 @@ myspecials = myspecials or {0, }
 myupgrades = myupgrades or {0, 0, 0, 0, }
 myprops = myprops or {}
 memberlevel = memberlevel or 1
-playerloaded = 0
+if !playerloaded then playerloaded = 0 end
 
 net.Receive("leaderboards", function(len, pl)
     
@@ -254,14 +254,13 @@ end
 
 function WrapText(width,charwidth,msg)
 
-local length = string.len(msg)
-local char = 0
-local lean = 0
-local sub = 0
-local newstring = ""
-if (length * charwidth) > width then //need to add support for different types of fonts
-
-	while (char < length) do
+	local length = string.len(msg)
+	local char = 0
+	local lean = 0
+	local sub = 0
+	local newstring = ""
+	if (length * charwidth) > width then //need to add support for different types of fonts
+		while (char < length) do
 			if (((char)*charwidth)-sub*charwidth) >= width then
 				if string.Left(string.Right(msg,length-char),1) == " " then
 				newstring = newstring .. "\n"
@@ -283,13 +282,12 @@ if (length * charwidth) > width then //need to add support for different types o
 
 
 			char = char + 1
+		end
+
+		return newstring
+	else
+		return msg
 	end
-
-return newstring
-else
-return msg
-end
-
 end
 
 function HUDHide( hud )
@@ -321,106 +319,111 @@ end
 
 
 function ScoreWindow()
-local num = 0
-local adjustforteams = 0
-for i,v in pairs(TeamInfo) do
+	local num = 0
+	local adjustforteams = 0
+	for i,v in pairs(TeamInfo) do
 		if v.Present then
 		adjustforteams = adjustforteams + 1
 	end
 end
 
-draw.RoundedBox(6, 10, -6, 267, 71+(adjustforteams*17), Color(200, 200, 200, 100))
-draw.RoundedBox(6, 11, -6, 265, 70+(adjustforteams*17), Color(5, 5, 5, 245))
+if GetConVar("cl_drawhud"):GetInt() == 1 then
+	draw.RoundedBox(6, 10, -6, 267, 71+(adjustforteams*17), Color(200, 200, 200, 100))
+	draw.RoundedBox(6, 11, -6, 265, 70+(adjustforteams*17), Color(5, 5, 5, 245))
 
-draw.RoundedBox(4, 16, 7, 256, 25, Color(200, 200, 200, 100))
-draw.RoundedBox(4, 17, 8, 254, 23, Color(5, 5, 5, 220))
+	draw.RoundedBox(4, 16, 7, 256, 25, Color(200, 200, 200, 100))
+	draw.RoundedBox(4, 17, 8, 254, 23, Color(5, 5, 5, 220))
 
 
-local GamemodeLogo = vgui.Create( "DImage" )
-GamemodeLogo:SetPos( 110, 11 )
-GamemodeLogo:SetSize( 76, 16 )
-GamemodeLogo:SetImage( "hud/logo", "vgui/avatar_default" )
-	
-draw.SimpleText("", "ClassName", 136, 20, Color(255, 255, 255, 255), 1, 1)
-draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's timer runs out", "Default", 350), "Default", 136, 35, Color(255, 255, 255, 255), 1, 1)
-	for i, v in pairs(TeamInfo) do
-	
-		if v.Present then
+	local GamemodeLogo = vgui.Create( "DImage" )
+	GamemodeLogo:SetPos( 110, 11 )
+	GamemodeLogo:SetSize( 76, 16 )
+	GamemodeLogo:SetImage( "hud/logo", "vgui/avatar_default" )
 		
-			local c = team.GetColor(i)
-			draw.RoundedBox(0, 29, 65 + num * 16, 242, 13, Color(0, 0, 0, 100))
-			surface.SetTexture(surface.GetTextureID("darkland/fortwars/timerbar"))
+	draw.SimpleText("", "ClassName", 136, 20, Color(255, 255, 255, 255), 1, 1)
+	draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's timer runs out", "Default", 350), "Default", 136, 35, Color(255, 255, 255, 255), 1, 1)
+		for i, v in pairs(TeamInfo) do
 		
+			if v.Present then
 			
-			surface.SetDrawColor(Color(c.r, c.g, c.b, 210))
-			surface.DrawTexturedRect(30, 66 + num * 16, 240, 11)
+				local c = team.GetColor(i)
+				draw.RoundedBox(0, 29, 65 + num * 16, 242, 13, Color(0, 0, 0, 100))
+				surface.SetTexture(surface.GetTextureID("darkland/fortwars/timerbar"))
 			
-			draw.RoundedBox(7, 23 + (DEFAULT_BALL_TIME - GetGlobalInt("team"..i.."time")) / DEFAULT_BALL_TIME * 242, 64 + num * 16, 14, 14, Color(c.r, c.g, c.b, 255))
-			
-			local font = "Default"  
-			draw.SimpleText(string.ToMinutesSeconds(GetGlobalInt("team"..i.."time")), font, 136, 70+num*16, Color(255, 255, 255, 255), 0, 1)
+				
+				surface.SetDrawColor(Color(c.r, c.g, c.b, 210))
+				surface.DrawTexturedRect(30, 66 + num * 16, 240, 11)
+				
+				draw.RoundedBox(7, 23 + (DEFAULT_BALL_TIME - GetGlobalInt("team"..i.."time")) / DEFAULT_BALL_TIME * 242, 64 + num * 16, 14, 14, Color(c.r, c.g, c.b, 255))
+				
+				local font = "Default"  
+				draw.SimpleText(string.ToMinutesSeconds(GetGlobalInt("team"..i.."time")), font, 136, 70+num*16, Color(255, 255, 255, 255), 0, 1)
+			end
+			num = num + 1;
 		end
-		num = num + 1;
-	end
 
+	end
 end
+
 -------------------------------------------------------------
 
 -------------------------------------------------------------
 
 function ModeWindow()
-	local y = -5
-	surface.SetTexture(surface.GetTextureID("darkland/fortwars/timerhud1a"))
-	surface.SetDrawColor(255, 255, 255, 255)
-	surface.DrawTexturedRect(ScrW() * 0.5-64, -3, 128, 64) 
-	
-	if whatmode == "Build" then
-		draw.SimpleTextOutlined("Build Mode", "Default", ScrW() * 0.5, y + 15, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
-		draw.SimpleText( string.ToMinutesSeconds( GetGlobalInt("buildtime")), "ClassNameLarge", ScrW() * 0.5, y + 35, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))	
-		draw.SimpleTextOutlined("Remaining", "Default", ScrW() * 0.5, y + 50, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
+	if GetConVar("cl_drawhud"):GetInt() == 1 then
+		local y = -5
+		surface.SetTexture(surface.GetTextureID("darkland/fortwars/timerhud1a"))
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(ScrW() * 0.5-64, -3, 128, 64) 
+		
+		if whatmode == "Build" then
+			draw.SimpleTextOutlined("Build Mode", "Default", ScrW() * 0.5, y + 15, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
+			draw.SimpleText( string.ToMinutesSeconds( GetGlobalInt("buildtime")), "ClassNameLarge", ScrW() * 0.5, y + 35, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))	
+			draw.SimpleTextOutlined("Remaining", "Default", ScrW() * 0.5, y + 50, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
 
-	elseif whatmode == "Fight" then
-		draw.SimpleTextOutlined("Fight Mode", "Default", ScrW() * 0.5, y + 15, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
-		draw.SimpleText( string.ToMinutesSeconds( GetGlobalInt("dmtime")), "ClassNameLarge", ScrW() * 0.5, y + 35, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))	
-		draw.SimpleTextOutlined("Remaining", "Default", ScrW() * 0.5, y + 50, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
+		elseif whatmode == "Fight" then
+			draw.SimpleTextOutlined("Fight Mode", "Default", ScrW() * 0.5, y + 15, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
+			draw.SimpleText( string.ToMinutesSeconds( GetGlobalInt("dmtime")), "ClassNameLarge", ScrW() * 0.5, y + 35, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))	
+			draw.SimpleTextOutlined("Remaining", "Default", ScrW() * 0.5, y + 50, Color(255, 255, 255, 255), 1, 1, 1, Color(0, 0, 0, 255))
+		end
 	end
 end
 
 function SniperScope()
-if LocalPlayer():GetActiveWeapon():IsValid() && LocalPlayer():GetActiveWeapon():GetNWInt( "zoomed" ) != 0 then
+	if LocalPlayer():GetActiveWeapon():IsValid() && LocalPlayer():GetActiveWeapon():GetNWInt( "zoomed" ) != 0 then
 
-			draw.RoundedBox( 0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0, 100))
-			local ScopeId = surface.GetTextureID("darkland/scope/scope")
-			surface.SetTexture(ScopeId)
+		draw.RoundedBox( 0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0, 100))
+		local ScopeId = surface.GetTextureID("darkland/scope/scope")
+		surface.SetTexture(ScopeId)
 
-			QuadTable = {}
-			QuadTable.texture 	= ScopeId
-			QuadTable.color		= Color( 0, 0, 0, 255 )
-			QuadTable.x = 0
-			QuadTable.y = 0
-			QuadTable.w = ScrW()
-			QuadTable.h = ScrH()
+		QuadTable = {}
+		QuadTable.texture 	= ScopeId
+		QuadTable.color		= Color( 0, 0, 0, 255 )
+		QuadTable.x = 0
+		QuadTable.y = 0
+		QuadTable.w = ScrW()
+		QuadTable.h = ScrH()
 
-			draw.TexturedQuad( QuadTable )
-			surface.SetDrawColor( 0, 0, 0, 200)
-			surface.DrawRect(ScrW() / 2 - 1, 0, 2, ScrH() )
-			surface.DrawRect(0, ScrH() / 2 - 1, ScrW(), 2 )
+		draw.TexturedQuad( QuadTable )
+		surface.SetDrawColor( 0, 0, 0, 200)
+		surface.DrawRect(ScrW() / 2 - 1, 0, 2, ScrH() )
+		surface.DrawRect(0, ScrH() / 2 - 1, ScrW(), 2 )
 	end
 end
 
 function HudPropCounter()
-local y = -5
-if whatmode == "Build" then
-	if !DM_MODE and TeamInfo[LocalPlayer():Team()] then
+	local y = -5
+	if whatmode == "Build" && GetConVar("cl_drawhud"):GetInt() == 1 then
+		if !DM_MODE and TeamInfo[LocalPlayer():Team()] then
 
-		surface.SetTexture(surface.GetTextureID("darkland/fortwars/prophud1"))
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.DrawTexturedRect(ScrW() * 0.5-134, ScrH() - 32, 512, 32) 
-		if TeamInfo[LocalPlayer():Team()].BoxCount > 0 then
-			draw.RoundedBox(6, ScrW() * 0.5 - 71, ScrH() - 22, math.Clamp(TeamInfo[LocalPlayer():Team()].BoxCount / MAX_PROPS * 196, 11, 196), 14, Color(204, 85, 0, 240)) 
-		end
-		draw.SimpleTextOutlined(TeamInfo[LocalPlayer():Team()].BoxCount.."/"..MAX_PROPS, "Default", ScrW() * 0.5 + 10, ScrH() - 15, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
-	
+			surface.SetTexture(surface.GetTextureID("darkland/fortwars/prophud1"))
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(ScrW() * 0.5-134, ScrH() - 32, 512, 32) 
+			if TeamInfo[LocalPlayer():Team()].BoxCount > 0 then
+				draw.RoundedBox(6, ScrW() * 0.5 - 71, ScrH() - 22, math.Clamp(TeamInfo[LocalPlayer():Team()].BoxCount / MAX_PROPS * 196, 11, 196), 14, Color(204, 85, 0, 240)) 
+			end
+			draw.SimpleTextOutlined(TeamInfo[LocalPlayer():Team()].BoxCount.."/"..MAX_PROPS, "Default", ScrW() * 0.5 + 10, ScrH() - 15, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255))
+		
 		end
 	end
 end
@@ -486,9 +489,9 @@ function GM:HUDDrawTargetID()
 	end
 end
 
-local PANEL = {}
+if !PANEL then PANEL = {} end
 function PANEL:Paint()
-    if playerloaded == 1 then
+    if playerloaded == 1 && GetConVar("cl_drawhud"):GetInt() == 1 then
         local Me = LocalPlayer()
         --HUD Texture
         if !IsValid(Me) then return end
@@ -525,7 +528,7 @@ function PANEL:Paint()
 end
 
 vgui.Register("Status", PANEL, "DPanel")
-statusPanel = vgui.Create("Status")
+if !statusPanel then statusPanel = vgui.Create("Status") end
 statusPanel:SetSize(512, 256)
 statusPanel:SetPos(22, ScrH()-266)
 
@@ -539,7 +542,7 @@ end
 
 local showPropInfo = false
 function Hud()
-local ply = LocalPlayer()
+	local ply = LocalPlayer()
 
 
 	local tr = {}
@@ -595,13 +598,13 @@ local ply = LocalPlayer()
 		draw.SimpleTextOutlined("Vote Skip Passed! Round Ending in: "..GetGlobalInt("buildtime"),"ClassNameLarge",ScrW()*0.5,80,Color(255,255,255,255),1,1,2,Color(0,0,0,255))
 	end
 
-if ballid then
-		ball = ents.GetByIndex(ballid)
-	else
-		ball = nil
-end
-if ball then
-end
+	if ballid then
+			ball = ents.GetByIndex(ballid)
+		else
+			ball = nil
+	end
+	if ball then
+	end
 end
 hook.Add( "HUDPaint", "FWHud", Hud )
 
@@ -612,7 +615,7 @@ end
 concommand.Add("propInfo", ShowHidePropInfo)
 
 
-ball = nil
+if !ball then ball = nil end
 function GM:Initialize()
 end
 
@@ -676,3 +679,7 @@ net.Receive("chatprint", function(len)
 end)
 
 usermessage.Hook("SetCanJoinTeam", function(um) canJoinTeam = um:ReadBool() end)
+
+hook.Add( "HUDPaint", "draw_viewmodel", function()
+	LocalPlayer():DrawViewModel( GetConVar("cl_drawhud"):GetBool() ) -- Call ConVar:GetBool() inside the parameters of DrawViewModel
+end )

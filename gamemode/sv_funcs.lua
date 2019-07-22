@@ -82,10 +82,12 @@ function meta:SetDonor(i)
 end
 
 function meta:IsPremium()
+	if !self.memberlevel then self.memberlevel = 1 end
 	if self.memberlevel == 2 then return true else return false end
 end
 
 function meta:IsPlatinum()
+	if !self.memberlevel then self.memberlevel = 1 end
 	if self.memberlevel >= 3 then return true else return false end
 end
 

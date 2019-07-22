@@ -86,7 +86,7 @@ function meta:IsPremium()
 end
 
 function meta:IsPlatinum()
-	if self.memberlevel == 3 then return true else return false end
+	if self.memberlevel >= 3 then return true else return false end
 end
 
 function meta:Gib( norm )

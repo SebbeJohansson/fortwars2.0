@@ -282,7 +282,7 @@ if self.Owner:KeyReleased(IN_ATTACK) then
 	
   elseif self.Owner:KeyDown(IN_RELOAD) then
 
-   if memberlevel == 3 then
+   if memberlevel >= 3 then
    
 		snapkey = target.active
 		

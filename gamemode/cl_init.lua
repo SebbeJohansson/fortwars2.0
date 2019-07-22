@@ -331,13 +331,17 @@ end
 
 draw.RoundedBox(6, 10, -6, 267, 71+(adjustforteams*17), Color(200, 200, 200, 100))
 draw.RoundedBox(6, 11, -6, 265, 70+(adjustforteams*17), Color(5, 5, 5, 245))
-	
+
 draw.RoundedBox(4, 16, 7, 256, 25, Color(200, 200, 200, 100))
 draw.RoundedBox(4, 17, 8, 254, 23, Color(5, 5, 5, 220))
 
-draw.SimpleText("FortWars 13", "ClassName", 136, 20, Color(255, 255, 255, 255), 1, 1)
+
+local GamemodeLogo = vgui.Create( "DImage" )
+GamemodeLogo:SetPos( 110, 11 )
+GamemodeLogo:SetSize( 76, 16 )
+GamemodeLogo:SetImage( "hud/logo", "vgui/avatar_default" )
 	
-	
+draw.SimpleText("", "ClassName", 136, 20, Color(255, 255, 255, 255), 1, 1)
 draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's timer runs out", "Default", 350), "Default", 136, 35, Color(255, 255, 255, 255), 1, 1)
 	for i, v in pairs(TeamInfo) do
 	
@@ -347,17 +351,13 @@ draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's time
 			draw.RoundedBox(0, 29, 65 + num * 16, 242, 13, Color(0, 0, 0, 100))
 			surface.SetTexture(surface.GetTextureID("darkland/fortwars/timerbar"))
 		
-			//if holdingTeam == i then 
-			//	c = Color(math.Clamp((c.r + 75), 0, 255), math.Clamp((c.g + 75), 0, 255), math.Clamp((c.b + 75), 0, 255), 210)
-			//end
+			
 			surface.SetDrawColor(Color(c.r, c.g, c.b, 210))
 			surface.DrawTexturedRect(30, 66 + num * 16, 240, 11)
 			
 			draw.RoundedBox(7, 23 + (DEFAULT_BALL_TIME - GetGlobalInt("team"..i.."time")) / DEFAULT_BALL_TIME * 242, 64 + num * 16, 14, 14, Color(c.r, c.g, c.b, 255))
-			//draw.Circle( 23 + (DEFAULT_BALL_TIME - GetGlobalInt("team"..i.."time")) / DEFAULT_BALL_TIME * 242, 64 + num * 16, 2, 2 )
 			
-			local font = "Default"
-			//if holdingTeam == i then font = "DefaultSmall" end
+			local font = "Default"  
 			draw.SimpleText(string.ToMinutesSeconds(GetGlobalInt("team"..i.."time")), font, 136, 70+num*16, Color(255, 255, 255, 255), 0, 1)
 		end
 		num = num + 1;
@@ -498,8 +498,16 @@ function PANEL:Paint()
         
         --Status Information
         local c = team.GetColor(Me:Team())
-        local txt = "Regular"
-        if memberlevel == 3 then txt = "Platinum" elseif memberlevel == 2 then txt = "Premium" end
+        local txt = "Guest"
+        if memberlevel < 2 then 
+        	txt = "Regular"
+        elseif memberlevel < 3 then 
+        	txt = "Premium"
+        elseif memberlevel < 4 then 
+        	txt = "Platinum" 
+        else 
+        	txt = "Staff" 
+    	end
         draw.RoundedBox(8, 13, 148, 264, 14, Color(c.r, c.g, c.b, 220))
         local status = "Class: "..Classes[class].NAME.."  |  "..""..txt.."  |  "..ToMoney( cash )
         draw.SimpleTextOutlined(status, "Default", 18, 153, Color(255, 255, 255, 255), 0, 1, 1, Color(0, 0, 0, 255)) 

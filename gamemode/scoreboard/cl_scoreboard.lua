@@ -1,9 +1,6 @@
 include( "cl_playerRow.lua" )
 include( "cl_playerFrame.lua" )
 
-//surface.CreateFont( "Impact", 32, 500, true, false, "ScoreboardHeader" )
-//surface.CreateFont( "Default", 20, 700, true, false, "ScoreboardSubtitle" )
-
 surface.CreateFont( "ScoreboardHeader", {
 	font = "Impact",
 	extended = false,
@@ -40,10 +37,6 @@ surface.CreateFont( "ScoreboardSubtitle", {
 	outline = false,
 } )
 
-
-local texLogo     = surface.GetTextureID( "darkland/fortwars/darklandlogo" )
-local texGradient = surface.GetTextureID( "gui/center_gradient" )
-
 local PANEL = {}
 
 /*---------------------------------------------------------
@@ -51,13 +44,14 @@ local PANEL = {}
 ---------------------------------------------------------*/
 function PANEL:Init()
   SCOREBOARD = self
-
-  self.Hostname = vgui.Create( "DLabel", self )
-  self.Hostname:SetText( GetHostName() )
+  
+  self.GamemodeLogo = vgui.Create( "DImage", self )
+  self.GamemodeLogo:SetPos( 25, 20 )
+  self.GamemodeLogo:SetSize( 199, 42 )
+  self.GamemodeLogo:SetImage( "hud/logo", "vgui/avatar_default" )
   
   self.Description = vgui.Create( "DLabel", self )
- // self.Description:SetExpensiveShadow( true )
-  self.Description:SetText( "FortWars 13 - "..game.GetMap() )
+  self.Description:SetText( GetHostName().." - "..game.GetMap() )
   
   self.PlayerFrame = vgui.Create( "PlayerFrame", self )
   self.PlayerRows = {}
@@ -65,7 +59,6 @@ function PANEL:Init()
   
   // Update the scoreboard every 1 second
   timer.Create( "ScoreboardUpdater", .25, 0, self.UpdateScoreboard, self )
-  //timer.Create( "ScoreboardUpdater", 1, 0, function() self.UpdateScoreboard end )
   
   self.lblKills = vgui.Create( "DLabel", self )
   self.lblKills:SetText( "Kills" )
@@ -101,11 +94,10 @@ end
    Name: PerformLayout
 ---------------------------------------------------------*/
 function PANEL:PerformLayout()
-  self.Hostname:SizeToContents()
-  self.Hostname:SetPos((self:GetWide()/2) - (self.Hostname:GetWide()/2), 16)
+  self.GamemodeLogo:SetPos((self:GetWide()/2) - (self.GamemodeLogo:GetWide()/2), 16)
   
   self.Description:SizeToContents()
-  self.Description:SetPos((self:GetWide()/2) - (self.Description:GetWide()/2), 64)
+  self.Description:SetPos((self:GetWide()/2) - (self.Description:GetWide()/2), 78)
   
   local iTall = self.PlayerFrame:GetCanvas():GetTall() + self.Description.y + self.Description:GetTall() + 30
   iTall = math.Clamp( iTall, 100, ScrH() * 0.9 )
@@ -138,8 +130,6 @@ function PANEL:PerformLayout()
     y = y + v:GetTall() + 1
   end
   
-  self.Hostname:SetText( GetHostName() )
-  
   self.lblKills:SetPos( self:GetWide() - 50*4 - self.lblKills:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
   
   self.lblAssists:SetPos( self:GetWide() - 50*3 - self.lblKills:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
@@ -154,10 +144,8 @@ end
 ---------------------------------------------------------*/
 function PANEL:ApplySchemeSettings()
 
-  self.Hostname:SetFont( "ScoreboardHeader" )
   self.Description:SetFont( "ScoreboardSubtitle" )
   
-  self.Hostname:SetFGColor(  Color( 180, 180, 180, 255 ))
   self.Description:SetFGColor( color_white )
   
   self.lblKills:SetFGColor(  Color( 180, 180, 180, 100 ))
@@ -199,14 +187,7 @@ function PANEL:Paint()
   draw.RoundedBox( 4, 4, self.Description.y - 4, self:GetWide() - 8, self:GetTall() - self.Description.y - 4, Color( 60, 60, 60, 200 ))
   -- Sub Header
   draw.RoundedBox( 4, 5, self.Description.y - 3, self:GetWide() - 10, self.Description:GetTall() + 5, Color( 94, 99, 103, 200 ))
-  //surface.SetTexture( texGradient )
-  surface.SetDrawColor( 255, 255, 255, 30 )
- // surface.DrawTexturedRect( 5, self.Description.y - 3, self:GetWide() - 10, self.Description:GetTall() + 5 )   
-  
-  -- Logo
-//  surface.SetTexture( texLogo )
- // surface.SetDrawColor( 255, 255, 255, 255 )
- // surface.DrawTexturedRect( 10, 10, 64, 64 )
+  surface.SetDrawColor( 255, 255, 255, 30 ) 
   
   return true
 end

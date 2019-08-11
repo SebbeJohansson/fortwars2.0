@@ -317,31 +317,30 @@ function draw.Circle( x, y, radius, seg )
 end
 
 
-
+if !GamemodeLogo then GamemodeLogo = vgui.Create( "DImage" ) end
 function ScoreWindow()
 	local num = 0
 	local adjustforteams = 0
 	for i,v in pairs(TeamInfo) do
 		if v.Present then
-		adjustforteams = adjustforteams + 1
+			adjustforteams = adjustforteams + 1
+		end
 	end
-end
 
-if GetConVar("cl_drawhud"):GetInt() == 1 then
-	draw.RoundedBox(6, 10, -6, 267, 71+(adjustforteams*17), Color(200, 200, 200, 100))
-	draw.RoundedBox(6, 11, -6, 265, 70+(adjustforteams*17), Color(5, 5, 5, 245))
+	if GetConVar("cl_drawhud"):GetInt() == 1 then
+		draw.RoundedBox(6, 10, -6, 267, 71+(adjustforteams*17), Color(200, 200, 200, 100))
+		draw.RoundedBox(6, 11, -6, 265, 70+(adjustforteams*17), Color(5, 5, 5, 245))
 
-	draw.RoundedBox(4, 16, 7, 256, 25, Color(200, 200, 200, 100))
-	draw.RoundedBox(4, 17, 8, 254, 23, Color(5, 5, 5, 220))
+		draw.RoundedBox(4, 16, 7, 256, 25, Color(200, 200, 200, 100))
+		draw.RoundedBox(4, 17, 8, 254, 23, Color(5, 5, 5, 220))
 
-
-	local GamemodeLogo = vgui.Create( "DImage" )
-	GamemodeLogo:SetPos( 110, 11 )
-	GamemodeLogo:SetSize( 76, 16 )
-	GamemodeLogo:SetImage( "hud/logo", "vgui/avatar_default" )
+		GamemodeLogo:SetPos( 110, 11 )
+		GamemodeLogo:SetSize( 76, 16 )
+		GamemodeLogo:SetImage( "hud/logo", "vgui/avatar_default" )
+			
+		draw.SimpleText("", "ClassName", 136, 20, Color(255, 255, 255, 255), 1, 1)
+		draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's timer runs out", "Default", 350), "Default", 136, 35, Color(255, 255, 255, 255), 1, 1)
 		
-	draw.SimpleText("", "ClassName", 136, 20, Color(255, 255, 255, 255), 1, 1)
-	draw.DrawText(util.WordWrap("Capture the ball and hold it until your team's timer runs out", "Default", 350), "Default", 136, 35, Color(255, 255, 255, 255), 1, 1)
 		for i, v in pairs(TeamInfo) do
 		
 			if v.Present then
